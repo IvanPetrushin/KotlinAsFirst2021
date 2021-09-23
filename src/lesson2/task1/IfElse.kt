@@ -72,11 +72,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    if (age % 100 in 5..20) return ("$age лет")
-    else if (age % 10 in 2..4) return ("$age года")
-    else if (age % 10 == 1) return ("$age год")
-    else return ("$age лет")
+fun ageDescription(age: Int): String = when {
+    age % 100 in 5..20 -> "$age лет"
+    age % 10 in 2..4 -> "$age года"
+    age % 10 == 1 -> "$age год"
+    else -> "$age лет"
 }
 
 /**
@@ -105,11 +105,11 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int {
-    if (kingX != rookX2 && kingY != rookY2 && kingX != rookX1 && kingY != rookY1) return 0
-    if ((kingX == rookX1 || kingY == rookY1) && kingX != rookX2 && kingY != rookY2) return 1
-    return if ((kingX == rookX2 || kingY == rookY2) && kingX != rookX1 && kingY != rookY1) 2
-    else 3
+): Int = when {
+    kingX != rookX2 && kingY != rookY2 && kingX != rookX1 && kingY != rookY1 -> 0
+    (kingX == rookX1 || kingY == rookY1) && kingX != rookX2 && kingY != rookY2 -> 1
+    (kingX == rookX2 || kingY == rookY2) && kingX != rookX1 && kingY != rookY1 -> 2
+    else -> 3
 }
 
 /**
@@ -134,6 +134,7 @@ fun rookOrBishopThreatens(
 }
 
 
+
 /**
  * Простая (2 балла)
  *
@@ -146,8 +147,8 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val sortedTriangles = mutableListOf(a, b, c)
     sortedTriangles.sort()
     if (sortedTriangles[2] >= sortedTriangles[1] + sortedTriangles[0]) return -1
-    if (sqr(sortedTriangles[2]) < (sqr(sortedTriangles[1]) + sqr(sortedTriangles[0]))) return 0
-    return if (sqr(sortedTriangles[2]) == (sqr(sortedTriangles[1]) + sqr(sortedTriangles[0]))) 1
+    if (sqr(sortedTriangles[2]) < sqr(sortedTriangles[1]) + sqr(sortedTriangles[0])) return 0
+    return if (sqr(sortedTriangles[2]) == sqr(sortedTriangles[1]) + sqr(sortedTriangles[0])) 1
     else 2
 }
 

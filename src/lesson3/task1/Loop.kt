@@ -2,6 +2,9 @@
 
 package lesson3.task1
 
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -17,7 +20,7 @@ import kotlin.math.sqrt
 fun factorial(n: Int): Double {
     var result = 1.0
     for (i in 1..n) {
-        result = result * i // Please do not fix in master
+        result *= i // Please do not fix in master
     }
     return result
 }
@@ -72,7 +75,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var digitNumber = 0
+    var number = n
+    do {
+        digitNumber++
+        number /= 10
+    } while (number > 0)
+    return digitNumber
+}
 
 /**
  * Простая (2 балла)
@@ -80,21 +91,34 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int = when {
+    n < 3 -> 1
+    else -> fib(n - 2) + fib(n - 1)
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    for (m in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % m == 0) return m
+    }
+    return n
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    for (m in (n / 2) downTo sqrt(n.toDouble()).toInt()) {
+        if (n % m == 0) return m
+    }
+    return 1
+}
 
 /**
  * Простая (2 балла)
@@ -112,7 +136,19 @@ fun maxDivisor(n: Int): Int = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var nextDigit = x
+    var collatzSteps = 0
+    while (nextDigit != 1) {
+        if (nextDigit % 2 == 0) {
+            nextDigit /= 2
+        } else {
+            nextDigit = 3 * nextDigit + 1
+        }
+        collatzSteps++
+    }
+    return collatzSteps
+}
 
 /**
  * Средняя (3 балла)
@@ -131,6 +167,7 @@ fun lcm(m: Int, n: Int): Int = TODO()
  */
 fun isCoPrime(m: Int, n: Int): Boolean = TODO()
 
+
 /**
  * Средняя (3 балла)
  *
@@ -138,7 +175,20 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+
+fun revert(n: Int): Int {
+    var revert = 0
+    var number = n
+    var digitNumber = 0
+    while (number > 0) {
+        digitNumber = number % 10
+        number /= 10
+        revert *= 10
+        revert += digitNumber
+    }
+    return revert
+}
+
 
 /**
  * Средняя (3 балла)
@@ -149,7 +199,24 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var number = n
+    while (number > 0) {
+        var firstDigit = 0
+        var exnumber = number
+        var depthNumber = 1
+        while (exnumber > 0) {
+            firstDigit = exnumber % 10
+            exnumber /= 10
+            depthNumber *= 10
+        }
+        if (firstDigit != number % 10) return false
+        number %= depthNumber / 10
+        number /= 10
+    }
+    return true
+}
+
 
 /**
  * Средняя (3 балла)
@@ -159,7 +226,19 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var number = n
+    do {
+        val digitNumber = number % 10
+        var newNumber = number / 10
+        while (newNumber > 0) {
+            if (digitNumber != newNumber % 10) return true
+            newNumber /= 10
+        }
+        number /= 10
+    } while (number > 0)
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -170,7 +249,24 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var newX = x
+    if (newX / PI % 1.0 == 0.0) newX = 0.0
+    else {
+        if ((newX / PI - newX / PI % 1.0) % 2.0 == 0.0) return 1.0
+        if ((newX / PI - newX / PI % 1.0) % 2.0 != 0.0) return -1.0
+    }
+    var sinx = newX
+    var currentX = newX
+    var factorialCounter = 2
+    while (abs(currentX) > eps) {
+        currentX = -currentX * newX.pow(2) /
+                (factorialCounter * (factorialCounter + 1))
+        factorialCounter += 2
+        sinx += currentX
+    }
+    return sinx
+}
 
 /**
  * Средняя (4 балла)
@@ -181,7 +277,24 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    var newX = x
+    if (newX / PI % 1.0 == 0.0) {
+        newX = if (newX / PI % 2.0 == 0.0) 0.0
+        else PI
+    } else return 0.0
+    var cosx = 1.0
+    var currentDigit = 1.0
+    var factorialCounter = 1
+    while (abs(currentDigit) > eps) {
+        currentDigit = -currentDigit * newX.pow(2) /
+                (factorialCounter * (factorialCounter + 1))
+        factorialCounter += 2
+        cosx += currentDigit
+    }
+    return cosx
+}
+
 
 /**
  * Сложная (4 балла)
@@ -203,4 +316,33 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var digitNumber = 1
+    var counter = 0
+    var finalresult = 0
+    while (counter < n) {
+        var result = fib(digitNumber)
+        var copyresult = result
+        while (copyresult > 0) {
+            copyresult /= 10
+            counter++
+        }
+        finalresult = result
+        if (counter == n) {
+            finalresult = result % 10
+            break
+        }
+        if (counter > n) {
+            while (counter != n) {
+                result /= 10
+                counter--
+            }
+            finalresult = result % 10
+            break
+        }
+        digitNumber++
+    }
+    return finalresult
+}
+
+

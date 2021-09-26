@@ -81,7 +81,7 @@ fun digitNumber(n: Int): Int {
     do {
         digitNumber++
         number /= 10
-    } while (number > 0)
+    } while (number != 0)
     return digitNumber
 }
 
@@ -199,23 +199,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var number = n
-    while (number > 0) {
-        var firstDigit = 0
-        var exnumber = number
-        var depthNumber = 1
-        while (exnumber > 0) {
-            firstDigit = exnumber % 10
-            exnumber /= 10
-            depthNumber *= 10
-        }
-        if (firstDigit != number % 10) return false
-        number %= depthNumber / 10
-        number /= 10
-    }
-    return true
-}
+fun isPalindrome(n: Int): Boolean = TODO()
 
 
 /**
@@ -251,10 +235,13 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var newX = x
-    if (newX / PI % 1.0 == 0.0) newX = 0.0
-    else {
-        if ((newX / PI - newX / PI % 1.0) % 2.0 == 0.0) return 1.0
-        if ((newX / PI - newX / PI % 1.0) % 2.0 != 0.0) return -1.0
+    if (newX / PI % 1 == 0.0) {
+        if (newX / PI % 1.0 == 0.0) {
+            newX = 0.0
+        } else {
+            if ((newX / PI - newX / PI % 1.0) % 2.0 == 0.0) return 1.0
+            if ((newX / PI - newX / PI % 1.0) % 2.0 != 0.0) return -1.0
+        }
     }
     var sinx = newX
     var currentX = newX
@@ -279,10 +266,12 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var newX = x
-    if (newX / PI % 1.0 == 0.0) {
-        newX = if (newX / PI % 2.0 == 0.0) 0.0
-        else PI
-    } else return 0.0
+    if (newX / PI % 1 == 0.0) {
+        if (newX / PI % 1.0 == 0.0) {
+            newX = if (newX / PI % 2.0 == 0.0) 0.0
+            else PI
+        } else return 0.0
+    }
     var cosx = 1.0
     var currentDigit = 1.0
     var factorialCounter = 1

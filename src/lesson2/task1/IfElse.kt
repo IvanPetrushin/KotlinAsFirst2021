@@ -128,8 +128,8 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int = when {
     kingX != rookX && kingY != rookY && abs(kingX - bishopX) != abs(kingY - bishopY) -> 0
-    kingX == rookX || kingY == rookY && abs(kingX - bishopX) != abs(kingY - bishopY) -> 1
-    kingX != rookX && kingY != rookY && abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
+    (kingX == rookX || kingY == rookY) && (abs(kingX - bishopX) != abs(kingY - bishopY)) -> 1
+    kingX != rookX && kingY != rookY && (abs(kingX - bishopX) == abs(kingY - bishopY)) -> 2
     else -> 3
 }
 

@@ -70,6 +70,7 @@ class Tests {
         assertEquals(2, digitNumber(10))
         assertEquals(2, digitNumber(99))
         assertEquals(3, digitNumber(123))
+        assertEquals(2, digitNumber(-14))
         assertEquals(10, digitNumber(Int.MAX_VALUE))
     }
 
@@ -176,7 +177,7 @@ class Tests {
         assertTrue(isPalindrome(15751))
         assertTrue(isPalindrome(24688642))
         assertFalse(isPalindrome(Int.MAX_VALUE))
-        assertTrue(isPalindrome(2147447412))
+        assertTrue(isPalindrome(1123993211))
     }
 
     @Test
@@ -201,6 +202,7 @@ class Tests {
         assertNotEquals(kotlin.math.sin(1.0), sin(1.0, 1.0))
         assertNotEquals(kotlin.math.sin(-0.5), sin(-0.5, 1.0))
         assertEquals(0.0, sin(9998 * PI / 2.0, 1e-5), 1e-5)
+        assertEquals(0.017452406459518247, sin(-18.832102629018816, 1e-10), 1e-5)
     }
 
     @Test
@@ -213,6 +215,7 @@ class Tests {
         assertEquals(-1.0, cos(10102 * PI / 2.0, 1e-5), 1e-5)
         assertNotEquals(kotlin.math.cos(1.0), cos(1.0, 1.0))
         assertNotEquals(kotlin.math.cos(0.5), cos(-0.5, 1.0))
+        assertEquals(0.9998476951604843, cos(-18.832102629018816, 1e-10), 1e-5)
     }
 
     @Test

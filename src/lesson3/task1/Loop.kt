@@ -91,9 +91,17 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = when {
-    n < 3 -> 1
-    else -> fib(n - 2) + fib(n - 1)
+fun fib(n: Int): Int {
+    var finalResult = 1
+    var result = 1
+    if (n < 3) return finalResult
+    else {
+        for (i in 2..n) {
+            result += finalResult
+            finalResult = result - finalResult
+        }
+    }
+    return finalResult
 }
 
 /**
@@ -274,11 +282,11 @@ fun cos(x: Double, eps: Double): Double {
     }
     var cosx = 1.0
     var currentDigit = 1.0
-    var factorialCounter = 1
+    var factorialCounter = 1.0
     while (abs(currentDigit) > eps) {
-        currentDigit = -currentDigit * newX.pow(2) /
-                (factorialCounter * (factorialCounter + 1))
-        factorialCounter += 2
+        currentDigit = -currentDigit * newX.pow(2.0) /
+                (factorialCounter * (factorialCounter + 1.0))
+        factorialCounter += 2.0
         cosx += currentDigit
     }
     return cosx

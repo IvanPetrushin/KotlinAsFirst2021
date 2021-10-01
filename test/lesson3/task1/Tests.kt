@@ -27,20 +27,6 @@ class Tests {
         assertFalse(isPrime(4))
         assertFalse(isPrime(9))
         assertFalse(isPrime(15))
-        var count = 0
-        for (n in 2..7919) {
-            if (isPrime(n)) {
-                count++
-            }
-        }
-        assertEquals(1000, count)
-        count = 0
-        for (n in 2..1000000) {
-            if (isPrime(n)) {
-                count++
-            }
-        }
-        assertEquals(78498, count)
     }
 
     @Test
@@ -202,21 +188,21 @@ class Tests {
         assertNotEquals(kotlin.math.sin(1.0), sin(1.0, 1.0))
         assertNotEquals(kotlin.math.sin(-0.5), sin(-0.5, 1.0))
         assertEquals(0.0, sin(9998 * PI / 2.0, 1e-5), 1e-5)
-        assertEquals(0.017452406459518247, sin(-18.832102629018816, 1e-10), 1e-5)
+        assertEquals(0.017452406459518247, sin(-18.832102629018816, 1e-10), 1e-10)
 
     }
 
     @Test
     @Tag("4")
     fun cos() {
-       // assertEquals(1.0, cos(0.0, 1e-5), 1e-5)
-       // assertEquals(0.0, cos(PI / 2.0, 1e-5), 1e-5)
-       // assertEquals(-1.0, cos(PI, 1e-5), 1e-5)
-       // assertEquals(0.0, cos(3.0 * PI / 2.0, 1e-5), 1e-5)
-       // assertEquals(-1.0, cos(10102 * PI / 2.0, 1e-5), 1e-5)
-       // assertNotEquals(kotlin.math.cos(1.0), cos(1.0, 1.0))
-       // assertNotEquals(kotlin.math.cos(0.5), cos(-0.5, 1.0))
-        assertEquals(0.9998476951604843, cos(-18.832102629018816, 1e-10), 1e-9)
+        assertEquals(1.0, cos(0.0, 1e-5), 1e-5)
+        assertEquals(0.0, cos(PI / 2.0, 1e-5), 1e-5)
+        assertEquals(-1.0, cos(PI, 1e-5), 1e-5)
+        assertEquals(0.0, cos(3.0 * PI / 2.0, 1e-5), 1e-5)
+        assertEquals(-1.0, cos(10102 * PI / 2.0, 1e-5), 1e-5)
+        assertNotEquals(kotlin.math.cos(1.0), cos(1.0, 1.0))
+        assertNotEquals(kotlin.math.cos(0.5), cos(-0.5, 1.0))
+        assertEquals(0.9998476951604843, cos(-18.832102629018816, 1e-10), 1e-10)
     }
 
     @Test

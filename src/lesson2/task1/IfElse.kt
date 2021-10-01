@@ -133,7 +133,6 @@ fun rookOrBishopThreatens(
     else -> 3
 }
 
-
 /**
  * Простая (2 балла)
  *
@@ -145,10 +144,12 @@ fun rookOrBishopThreatens(
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val sortedTriangles = mutableListOf(a, b, c)
     sortedTriangles.sort()
-    if (sortedTriangles[2] >= sortedTriangles[1] + sortedTriangles[0]) return -1
-    if (sqr(sortedTriangles[2]) < sqr(sortedTriangles[1]) + sqr(sortedTriangles[0])) return 0
-    return if (sqr(sortedTriangles[2]) == sqr(sortedTriangles[1]) + sqr(sortedTriangles[0])) 1
-    else 2
+    return when {
+        sortedTriangles[2] >= sortedTriangles[1] + sortedTriangles[0] -> -1
+        sqr(sortedTriangles[2]) < sqr(sortedTriangles[1]) + sqr(sortedTriangles[0]) -> 0
+        sqr(sortedTriangles[2]) == sqr(sortedTriangles[1]) + sqr(sortedTriangles[0]) -> 1
+        else -> 2
+    }
 }
 
 /**

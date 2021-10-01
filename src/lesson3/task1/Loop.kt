@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
@@ -122,8 +123,8 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    for (m in (n / 2) downTo sqrt(n.toDouble()).toInt()) {
-        if (n % m == 0) return m
+    for (m in 2..sqrt(n.toDouble()).toInt()) {
+        if (n % m == 0) return n / m
     }
     return 1
 }
@@ -187,9 +188,8 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
 fun revert(n: Int): Int {
     var revert = 0
     var number = n
-    var digitNumber = 0
     while (number > 0) {
-        digitNumber = number % 10
+        val digitNumber = number % 10
         number /= 10
         revert *= 10
         revert += digitNumber
@@ -220,15 +220,10 @@ fun isPalindrome(n: Int): Boolean = TODO()
  */
 fun hasDifferentDigits(n: Int): Boolean {
     var number = n
-    do {
-        val digitNumber = number % 10
-        var newNumber = number / 10
-        while (newNumber > 0) {
-            if (digitNumber != newNumber % 10) return true
-            newNumber /= 10
-        }
+    while (number > 9) {
+        if (number % 10 != number % 100 / 10) return true
         number /= 10
-    } while (number > 0)
+    }
     return false
 }
 
@@ -242,15 +237,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    var newX = x
-    if (newX / PI % 1 == 0.0) {
-        if (newX / PI % 1.0 == 0.0) {
-            newX = 0.0
-        } else {
-            if ((newX / PI - newX / PI % 1.0) % 2.0 == 0.0) return 1.0
-            if ((newX / PI - newX / PI % 1.0) % 2.0 != 0.0) return -1.0
-        }
-    }
+    val newX = x % (2 * PI)
     var sinx = newX
     var currentX = newX
     var factorialCounter = 2
@@ -273,13 +260,7 @@ fun sin(x: Double, eps: Double): Double {
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
 fun cos(x: Double, eps: Double): Double {
-    var newX = x
-    if (newX / PI % 1 == 0.0) {
-        if (newX / PI % 1.0 == 0.0) {
-            newX = if (newX / PI % 2.0 == 0.0) 0.0
-            else PI
-        } else return 0.0
-    }
+    val newX = x % (2 * PI)
     var cosx = 1.0
     var currentDigit = 1.0
     var factorialCounter = 1.0
@@ -292,7 +273,6 @@ fun cos(x: Double, eps: Double): Double {
     return cosx
 }
 
-
 /**
  * Сложная (4 балла)
  *
@@ -302,7 +282,23 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var counter = 0
+    var digit = 0
+    while (counter < n) {
+        digit++
+        counter += digitNumber(sqr(digit))
+    }
+    var finalDigit = sqr(digit)
+    if (counter == n) return finalDigit % 10
+    else {
+        while (counter != n) {
+            finalDigit /= 10
+            counter--
+        }
+    }
+    return finalDigit % 10
+}
 
 /**
  * Сложная (5 баллов)
@@ -314,32 +310,23 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var digitNumber = 1
     var counter = 0
-    var finalresult = 0
+    var digit = 0
     while (counter < n) {
-        var result = fib(digitNumber)
-        var copyresult = result
-        while (copyresult > 0) {
-            copyresult /= 10
-            counter++
-        }
-        finalresult = result
-        if (counter == n) {
-            finalresult = result % 10
-            break
-        }
-        if (counter > n) {
-            while (counter != n) {
-                result /= 10
-                counter--
-            }
-            finalresult = result % 10
-            break
-        }
-        digitNumber++
+        digit++
+        val fibDigit = fib(digit)
+        counter += digitNumber(fibDigit)
     }
-    return finalresult
+    var result = fib(digit)
+    if (counter == n) return result % 10
+    else {
+        while (counter != n) {
+            result /= 10
+            counter--
+        }
+    }
+    return result % 10
 }
+
 
 

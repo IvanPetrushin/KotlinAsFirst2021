@@ -188,7 +188,6 @@ class Tests {
         assertNotEquals(kotlin.math.sin(1.0), sin(1.0, 1.0))
         assertNotEquals(kotlin.math.sin(-0.5), sin(-0.5, 1.0))
         assertEquals(0.0, sin(9998 * PI / 2.0, 1e-5), 1e-5)
-        assertEquals(0.017452406459518247, sin(-18.832102629018816, 1e-10), 1e-10)
 
     }
 

@@ -3,6 +3,7 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
+import ru.spbstu.kotlin.generate.assume.retry
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
@@ -122,12 +123,8 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    for (m in 2..sqrt(n.toDouble()).toInt()) {
-        if (n % m == 0) return n / m
-    }
-    return 1
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
+
 
 /**
  * Простая (2 балла)

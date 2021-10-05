@@ -97,11 +97,9 @@ fun fib(n: Int): Int {
     var finalResult = 1
     var result = 1
     if (n < 3) return finalResult
-    else {
-        for (i in 2..n) {
-            result += finalResult
-            finalResult = result - finalResult
-        }
+    for (i in 2..n) {
+        result += finalResult
+        finalResult = result - finalResult
     }
     return finalResult
 }

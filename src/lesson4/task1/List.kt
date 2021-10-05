@@ -129,10 +129,8 @@ fun abs(v: List<Double>): Double = sqrt(v.map { it * it }.sum())
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-    return if (list.isEmpty()) 0.0
-    else list.sum() / list.size
-}
+fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0
+else list.sum() / list.size
 
 /**
  * Средняя (3 балла)
@@ -143,15 +141,12 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    return if (list.isEmpty()) list
-    else {
-        val mean = mean(list)
-        for (i in 0 until list.size) {
-            list[i] -= mean
-        }
-        return list
-    }
+    if (list.isEmpty()) return list
+    val mean = mean(list)
+    for (i in 0 until list.size) list[i] -= mean
+    return list
 }
+
 
 /**
  * Средняя (3 балла)
@@ -251,7 +246,7 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * Сложная (5 баллов)
  *
  * Перевести натуральное число n > 0 в римскую систему.
- * Римские цифры: 1 = I, 4 = IV, 5 = V, 9 = IX, 10 = X, 40 = XL, 50 = L,
+ * Римские цифры: 1 = I, 4 = IV, 5 = IV, 9 = IX, 10 = X, 40 = XL, 50 = L,
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */

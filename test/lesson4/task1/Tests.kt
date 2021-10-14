@@ -210,6 +210,7 @@ class Tests {
     @Test
     @Tag("4")
     fun decimalFromString() {
+
         assertEquals(1, decimalFromString("1", 2))
         assertEquals(100, decimalFromString("1210", 4))
         assertEquals(250, decimalFromString("13c", 14))

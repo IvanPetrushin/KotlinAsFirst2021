@@ -252,12 +252,18 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  */
 
 fun roman(n: Int): String {
-    val romanDigitsTo10 = listOf<String>("", "I", "II", "III", "IV", "V", "VI",
-        "VII", "VIII", "IX",)
-    val romanDigitsTo100 = listOf<String>("", "X", "XX", "XXX", "XL", "L", "LX",
-        "LXX", "LXXX", "XC")
-    val romanDigitsTo1000 = listOf<String>("", "C", "CC", "CCC", "CD", "D", "DC",
-        "DCC", "DCCC", "CM")
+    val romanDigitsTo10 = listOf<String>(
+        "", "I", "II", "III", "IV", "V", "VI",
+        "VII", "VIII", "IX",
+    )
+    val romanDigitsTo100 = listOf<String>(
+        "", "X", "XX", "XXX", "XL", "L", "LX",
+        "LXX", "LXXX", "XC"
+    )
+    val romanDigitsTo1000 = listOf<String>(
+        "", "C", "CC", "CCC", "CD", "D", "DC",
+        "DCC", "DCCC", "CM"
+    )
     val romanDigitsTo10000 = listOf<String>("", "M", "MM", "MMM")
     return romanDigitsTo10000[n / 1000] + romanDigitsTo1000[n / 100 % 10] +
             romanDigitsTo100[n % 100 / 10] + romanDigitsTo10[n % 10]
@@ -270,4 +276,64 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+
+
+fun russian(n: Int): String {
+    val result = mutableListOf<String>()
+    val digits1a = listOf<String>(
+        "", "один", "два", "три", "четыре", "пять",
+        "шесть", "семь", "восемь", "девять",
+    )
+    val digits1b = listOf<String>(
+        "десять", "одиннадцать", "двенадцать",
+        "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать",
+        "восемнадцать", "девятнадцать"
+    )
+    val digits2 = listOf<String>(
+        "", "", "двадцать", "тридцать", "сорок",
+        "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+    )
+    val digits3 = listOf<String>(
+        "", "сто", "двести", "триста", "четыреста",
+        "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
+    )
+    var currentDigit = n / 100
+    if (currentDigit / 1000 != 0) {
+        if (currentDigit % 1000 / 10 == 0 && currentDigit % 100 / 10 == 0) {
+            result.add(digits3[currentDigit / 1000])
+            result.add("тысяч")
+        } else result.add(digits3[currentDigit / 1000])
+    }
+    if (currentDigit / 100 % 10 != 0) {
+        if (currentDigit / 100 % 10 == 1) {
+            result.add(digits1b[currentDigit % 100 / 10])
+            result.add("тысяч")
+        } else result.add(digits2[currentDigit % 100 / 10])
+    }
+    if (currentDigit % 100 / 10 != 0 && currentDigit % 100 / 10 != 1
+        && currentDigit / 100 % 10 != 1)
+        if (currentDigit % 100 / 10 in 5..9 || currentDigit % 100 / 10 == 0) {
+            if (currentDigit % 100 / 10 != 0)
+                result.add(digits1a[currentDigit % 100 / 10])
+            result.add("тысяч")
+        } else if (currentDigit % 100 / 10 in 2..4) {
+            if (currentDigit % 100 / 10 == 2) result.add("две")
+            else result.add(digits1a[currentDigit % 100 / 10])
+            result.add("тысячи")
+        } else result.add("одна тысяча")
+    if (currentDigit % 10 != 0) {
+        result.add(digits3[currentDigit % 10])
+    }
+    currentDigit = n % 100
+    if (currentDigit != 0) {
+        if (currentDigit / 10 in 2..9) {
+            result.add(digits2[currentDigit / 10])
+            if (currentDigit % 10 != 0)
+                result.add(digits1a[currentDigit % 10])
+        } else {
+            if (currentDigit / 10 == 0) result.add(digits1a[currentDigit % 10])
+            else result.add(digits1b[currentDigit % 10])
+        }
+    }
+    return result.joinToString(" ")
+}

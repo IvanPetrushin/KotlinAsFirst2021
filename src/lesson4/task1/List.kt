@@ -308,12 +308,14 @@ fun russian(n: Int): String {
         if (currentDigit / 100 % 10 == 1) {
             result.add(digits1b[currentDigit % 100 / 10])
             result.add("тысяч")
+        } else if (currentDigit % 100 / 10 == 0) {
+            result.add(digits2[currentDigit / 100 % 10])
+            result.add("тысяч")
         } else result.add(digits2[currentDigit / 100 % 10])
     }
     if (currentDigit % 100 / 10 != 0 && currentDigit / 100 % 10 != 1) {
-        if (currentDigit % 100 / 10 in 5..9 || currentDigit % 100 / 10 == 0) {
-            if (currentDigit % 100 / 10 != 0)
-                result.add(digits1a[currentDigit % 100 / 10])
+        if (currentDigit % 100 / 10 in 5..9) {
+            result.add(digits1a[currentDigit % 100 / 10])
             result.add("тысяч")
         } else if (currentDigit % 100 / 10 in 2..4) {
             if (currentDigit % 100 / 10 == 2) result.add("две")

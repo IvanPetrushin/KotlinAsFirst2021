@@ -235,7 +235,8 @@ class Tests {
         assertFalse(canBuildFrom(emptyList(), "foo"))
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
-        assertFalse(canBuildFrom(listOf(), ""))
+        assertTrue(canBuildFrom(listOf(), ""))
+        assertTrue(canBuildFrom(listOf('a'), ""))
     }
 
     @Test

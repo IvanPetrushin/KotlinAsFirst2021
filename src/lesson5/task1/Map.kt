@@ -218,10 +218,9 @@ fun findCheapestStuff(
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    if (chars.isNullOrEmpty() && word.isNullOrEmpty()) return true
-    if (chars.isNullOrEmpty() && word.isNotEmpty() || chars.isNotEmpty()
-        && word.isNullOrEmpty()
-    ) return false
+    if (chars.isNullOrEmpty() && word.isNullOrEmpty() || chars.isNotEmpty()
+        && word.isNullOrEmpty()) return true
+    if (chars.isNullOrEmpty() && word.isNotEmpty()) return false
     for (i in chars) if (i !in word) return false
     return true
 }

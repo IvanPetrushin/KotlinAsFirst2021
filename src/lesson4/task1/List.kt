@@ -323,9 +323,7 @@ fun russian(n: Int): String {
             result.add("тысячи")
         } else result.add("одна тысяча")
     }
-    if (currentDigit % 10 != 0) {
-        result.add(digits3[currentDigit % 10])
-    }
+    if (currentDigit % 10 != 0) result.add(digits3[currentDigit % 10])
     currentDigit = n % 100
     if (currentDigit != 0) {
         if (currentDigit / 10 in 2..9) {

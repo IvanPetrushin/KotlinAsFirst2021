@@ -4,6 +4,7 @@ package lesson5.task1
 
 import ru.spbstu.wheels.NullableMonad.filter
 import ru.spbstu.wheels.toMutableMap
+import kotlin.math.abs
 
 
 // Урок 5: ассоциативные массивы и множества
@@ -316,10 +317,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val map = mutableMapOf<Int, Int>()
     if (list.isNotEmpty()) {
-        if (number == 0) if (list[0] == list[1] && list[0] == 0) return Pair(
-            0,
-            1
-        )
+        if (number == 0) {
+            val a = mutableListOf<Int>()
+            for (i in list.indices) {
+                if (list[i] == 0) a.add(i)
+                if (a.size == 2) return Pair(a[0], a[1])
+            }
+        }
         for (i in list.indices) {
             map[number - list[i]] = i
             if (map[number - list[i]] != map[list[i]] && map[number - list[i]] != null

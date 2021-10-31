@@ -184,14 +184,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
 fun mergePhoneBooks(
     mapA: Map<String, String>,
     mapB: Map<String, String>
-): Map<String, String> {
-    val mapA = mapA.toMutableMap()
-    for ((key, value) in mapB) {
-        if (mapA.containsKey(key))
-            if (!mapA.containsValue(value)) mapA[key] += ", $value"
-    }
-    return mapB + mapA
-}
+): Map<String, String> = TODO()
 
 
 /**
@@ -322,17 +315,22 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val map = mutableMapOf<Int, Int>()
-    if (number == 0) if (list[0] == list[1] && list[0] == 0) return Pair(0, 1)
-    for (i in list.indices) {
-        map[number - list[i]] = i
-        if (map[number - list[i]] != map[list[i]] && map[number - list[i]] != null
-            && map[list[i]] != null
+    if (list.isNotEmpty()) {
+        if (number == 0) if (list[0] == list[1] && list[0] == 0) return Pair(
+            0,
+            1
         )
-            return Pair(
-                minOf((map[number - list[i]])!!, (map[list[i]])!!),
-                maxOf((map[number - list[i]])!!, (map[list[i]])!!)
+        for (i in list.indices) {
+            map[number - list[i]] = i
+            if (map[number - list[i]] != map[list[i]] && map[number - list[i]] != null
+                && map[list[i]] != null
             )
+                return Pair(
+                    minOf((map[number - list[i]])!!, (map[list[i]])!!),
+                    maxOf((map[number - list[i]])!!, (map[list[i]])!!)
+                )
 
+        }
     }
     return Pair(-1, -1)
 }

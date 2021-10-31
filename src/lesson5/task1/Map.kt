@@ -2,6 +2,9 @@
 
 package lesson5.task1
 
+import ru.spbstu.wheels.NullableMonad.filter
+import ru.spbstu.wheels.toMutableMap
+
 
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
@@ -151,7 +154,15 @@ fun subtractOf(
  * В выходном списке не должно быть повторяющихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
+    val result = mutableListOf<String>()
+    val a = a.toHashSet().toList()
+    val b = b.toHashSet().toList()
+    for (i in a.indices) for (j in b.indices) {
+        if (a[i] == b[j]) result.add(a[i])
+    }
+    return result
+}
 
 /**
  * Средняя (3 балла)
@@ -173,7 +184,15 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
 fun mergePhoneBooks(
     mapA: Map<String, String>,
     mapB: Map<String, String>
-): Map<String, String> = TODO()
+): Map<String, String> {
+    val mapA = mapA.toMutableMap()
+    for ((key, value) in mapB) {
+        if (mapA.containsKey(key))
+            if (!mapA.containsValue(value)) mapA[key] += ", $value"
+    }
+    return mapB + mapA
+}
+
 
 /**
  * Средняя (4 балла)
@@ -187,6 +206,7 @@ fun mergePhoneBooks(
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> =
     TODO()
+
 
 /**
  * Средняя (4 балла)
@@ -204,8 +224,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(
-    stuff: Map<String, Pair<String, Double>>,
-    kind: String
+    stuff: Map<String, Pair<String, Double>>, kind: String
 ): String? = TODO()
 
 /**
@@ -302,17 +321,21 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val n = list.size
-    for (i in 0 until n) {
-        if ((number - list[i]) in list && i != list.indexOf(number - list[i]))
+    val map = mutableMapOf<Int, Int>()
+    if (number == 0) if (list[0] == list[1] && list[0] == 0) return Pair(0, 1)
+    for (i in list.indices) {
+        map[number - list[i]] = i
+        if (map[number - list[i]] != map[list[i]] && map[number - list[i]] != null
+            && map[list[i]] != null
+        )
             return Pair(
-                minOf(i, list.indexOf(number - list[i])),
-                maxOf(i, list.indexOf(number - list[i]))
+                minOf((map[number - list[i]])!!, (map[list[i]])!!),
+                maxOf((map[number - list[i]])!!, (map[list[i]])!!)
             )
+
     }
     return Pair(-1, -1)
 }
-
 
 /**
  * Очень сложная (8 баллов)

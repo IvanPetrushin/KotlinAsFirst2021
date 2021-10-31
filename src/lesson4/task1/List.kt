@@ -252,19 +252,19 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  */
 
 fun roman(n: Int): String {
-    val romanDigitsTo10 = listOf<String>(
+    val romanDigitsTo10 = listOf(
         "", "I", "II", "III", "IV", "V", "VI",
         "VII", "VIII", "IX",
     )
-    val romanDigitsTo100 = listOf<String>(
+    val romanDigitsTo100 = listOf(
         "", "X", "XX", "XXX", "XL", "L", "LX",
         "LXX", "LXXX", "XC"
     )
-    val romanDigitsTo1000 = listOf<String>(
+    val romanDigitsTo1000 = listOf(
         "", "C", "CC", "CCC", "CD", "D", "DC",
         "DCC", "DCCC", "CM"
     )
-    val romanDigitsTo10000 = listOf<String>("", "M", "MM", "MMM")
+    val romanDigitsTo10000 = listOf("", "M", "MM", "MMM")
     return romanDigitsTo10000[n / 1000] + romanDigitsTo1000[n / 100 % 10] +
             romanDigitsTo100[n % 100 / 10] + romanDigitsTo10[n % 10]
 }
@@ -280,20 +280,20 @@ fun roman(n: Int): String {
 
 fun russian(n: Int): String {
     val result = mutableListOf<String>()
-    val digits1a = listOf<String>(
+    val digits1a = listOf(
         "", "один", "два", "три", "четыре", "пять",
         "шесть", "семь", "восемь", "девять",
     )
-    val digits1b = listOf<String>(
+    val digits1b = listOf(
         "десять", "одиннадцать", "двенадцать",
         "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать",
         "восемнадцать", "девятнадцать"
     )
-    val digits2 = listOf<String>(
+    val digits2 = listOf(
         "", "", "двадцать", "тридцать", "сорок",
         "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
     )
-    val digits3 = listOf<String>(
+    val digits3 = listOf(
         "", "сто", "двести", "триста", "четыреста",
         "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
     )

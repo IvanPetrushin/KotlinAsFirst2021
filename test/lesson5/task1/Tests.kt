@@ -144,6 +144,10 @@ class Tests {
     @Tag("2")
     fun whoAreInBoth() {
         assertEquals(
+            listOf("Марат"),
+            whoAreInBoth(listOf("Марат", "Cемён", "Марат"), listOf("Марат", "Марат"))
+        )
+        assertEquals(
             emptyList<String>(),
             whoAreInBoth(emptyList(), emptyList())
         )

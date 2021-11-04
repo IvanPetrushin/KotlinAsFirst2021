@@ -74,7 +74,42 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val line = str.split(" ").toMutableList()
+    if (line.count() != 3) return String.format("")
+    var month = 0
+    val day = line[0].toIntOrNull()
+    val year = line[2].toIntOrNull()
+    if (year != null && day != null) {
+        if (day !in 1..31) return String.format("")
+        if (day in 1..31) {
+            when (line[1]) {
+                "января" -> month = 1
+                "марта" -> month = 3
+                "мая" -> month = 5
+                "июля" -> month = 7
+                "августа" -> month = 8
+                "октября" -> month = 10
+                "декабря" -> month = 12
+            }
+        }
+        if (day in 1..30) {
+            when (line[1]) {
+                "апреля" -> month = 4
+                "июня" -> month = 6
+                "сентября" -> month = 9
+                "ноября" -> month = 11
+            }
+        }
+        if (day in 1..28 && year % 4 != 0 || (year % 4 == 0 && year % 100 != 0
+                    || (year % 400 == 0))
+        )
+            if (line[1] == "февраля") month = 2
+    }
+    if (month == 0) return String.format("")
+    return String.format("%02d.%02d.%d", day, month, year)
+}
+
 
 /**
  * Средняя (4 балла)
@@ -86,7 +121,41 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val line = digital.split(".").toMutableList()
+    if (line.count() != 3) return String.format("")
+    var month = ""
+    val day = line[0].toIntOrNull()
+    val year = line[2].toIntOrNull()
+    if (day !in 1..31) return String.format("")
+    if (year != null && day != null) {
+        if (day in 1..31) {
+            when (line[1]) {
+                "01" -> month = "января"
+                "03" -> month = "марта"
+                "05" -> month = "мая"
+                "07" -> month = "июля"
+                "08" -> month = "августа"
+                "10" -> month = "октября"
+                "12" -> month = "декабря"
+            }
+        }
+        if (day in 1..30) {
+            when (line[1]) {
+                "04" -> month = "апреля"
+                "06" -> month = "июня"
+                "09" -> month = "сентября"
+                "11" -> month = "ноября"
+            }
+        }
+        if (day in 1..28 && year % 4 != 0 || (year % 4 == 0 && year % 100 != 0
+                    || (year % 400 == 0))
+        )
+            if (line[1] == "02") month = "февраля"
+    }
+    if (month == "") return String.format("")
+    return String.format("%d %s %d", day, month, year)
+}
 
 /**
  * Средняя (4 балла)
@@ -213,4 +282,5 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> =
+    TODO()

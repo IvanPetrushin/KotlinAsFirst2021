@@ -2,6 +2,10 @@
 
 package lesson6.task1
 
+import lesson3.task1.fib
+import java.io.File
+import java.lang.IllegalArgumentException
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -102,7 +106,8 @@ fun dateStrToDigit(str: String): String {
             }
         }
         if (day in 1..28 && year % 4 != 0 || (day in 1..29 && year % 4 == 0
-                    && year % 100 != 0 || (year % 400 == 0)))
+                    && year % 100 != 0 || (year % 400 == 0))
+        )
             if (line[1] == "февраля") month = 2
     }
     if (month == 0) return String.format("")
@@ -148,7 +153,8 @@ fun dateDigitToStr(digital: String): String {
             }
         }
         if (day in 1..28 && year % 4 != 0 || (day in 1..29 && year % 4 == 0
-                    && year % 100 != 0 || (year % 400 == 0)))
+                    && year % 100 != 0 || (year % 400 == 0))
+        )
             if (line[1] == "02") month = "февраля"
     }
     if (month == "") return String.format("")
@@ -194,7 +200,15 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    val line = jumps.split(' ').toMutableList()
+    var result = -10
+    for (i in line.indices)
+        if (line[i] == "+" && line[i - 1].toIntOrNull() != null)
+            result = maxOf(line[i - 1].toInt(), result)
+    return if (result > 0) result
+    else -1
+}
 
 /**
  * Сложная (6 баллов)
@@ -282,3 +296,4 @@ fun fromRoman(roman: String): Int = TODO()
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> =
     TODO()
+

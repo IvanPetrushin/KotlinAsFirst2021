@@ -2,6 +2,7 @@
 
 package lesson5.task1
 
+import lesson3.task1.fib
 import ru.spbstu.wheels.NullableMonad.filter
 import ru.spbstu.wheels.toMutableMap
 import kotlin.math.abs

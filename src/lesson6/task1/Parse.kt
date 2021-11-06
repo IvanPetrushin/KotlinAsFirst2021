@@ -152,7 +152,7 @@ fun dateDigitToStr(digital: String): String {
                 "11" -> month = "ноября"
             }
         }
-        if (day in 1..28 && year % 4 != 0 || (day in 1..29 && year % 4 == 0
+        if (day in 1..28 || (day in 1..29 && year % 4 == 0
                     && year % 100 != 0 || (year % 400 == 0))
         )
             if (line[1] == "02") month = "февраля"

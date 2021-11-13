@@ -44,6 +44,8 @@ class Tests {
         assertEquals("", dateStrToDigit("29 февраля 1890"))
         assertEquals("29.02.1892", dateStrToDigit("29 февраля 1892"))
         assertEquals("", dateStrToDigit("30 февраля 4"))
+        assertEquals("", dateStrToDigit("0 февраля 1892"))
+        assertEquals("", dateStrToDigit("292 февраля 1892"))
     }
 
     @Test
@@ -91,22 +93,21 @@ class Tests {
         assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
         assertEquals(2, bestHighJump("2 +"))
         assertEquals(-1, bestHighJump("% +"))
-
-
+        assertEquals(-1, bestHighJump("%220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
     }
 
     @Test
     @Tag("6")
     fun plusMinus() {
-//        assertEquals(0, plusMinus("0"))
-//        assertEquals(4, plusMinus("2 + 2"))
+        assertEquals(0, plusMinus("0"))
+        assertEquals(4, plusMinus("2 + 2"))
         assertEquals(6, plusMinus("2 + 31 - 40 + 13"))
-//        assertEquals(-1, plusMinus("0 - 1"))
-//        assertThrows(IllegalArgumentException::class.java) { plusMinus("-2") }
-//        assertThrows(IllegalArgumentException::class.java) { plusMinus("+ 4") }
-//        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }
-//        assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }
-//        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }
+        assertEquals(-1, plusMinus("0 - 1"))
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("-2") }
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("+ 4") }
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }
     }
 
     @Test

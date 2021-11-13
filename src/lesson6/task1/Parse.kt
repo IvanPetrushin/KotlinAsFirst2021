@@ -2,9 +2,12 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
 import lesson3.task1.fib
+import lesson4.task1.sqRoots
 import java.io.File
 import java.lang.IllegalArgumentException
+import kotlin.reflect.typeOf
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -79,39 +82,37 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    val line = str.split(" ").toMutableList()
-    if (line.count() != 3) return String.format("")
-    var month = 0
-    val day = line[0].toIntOrNull()
-    val year = line[2].toIntOrNull()
-    if (year != null && day != null) {
-        if (day !in 1..31) return String.format("")
-        if (day in 1..31) {
-            when (line[1]) {
-                "января" -> month = 1
-                "марта" -> month = 3
-                "мая" -> month = 5
-                "июля" -> month = 7
-                "августа" -> month = 8
-                "октября" -> month = 10
-                "декабря" -> month = 12
-            }
-        }
-        if (day in 1..30) {
-            when (line[1]) {
-                "апреля" -> month = 4
-                "июня" -> month = 6
-                "сентября" -> month = 9
-                "ноября" -> month = 11
-            }
-        }
-        if (day in 1..28 && year % 4 != 0 || (day in 1..29 && year % 4 == 0
-                    && year % 100 != 0 || (year % 400 == 0))
+    if (!str.matches(Regex("""\d+ ([а-я])+ \d+"""))) return ""
+    val mapOfMonths = mapOf(
+        "января" to 1,
+        "февраля" to 2,
+        "марта" to 3,
+        "апреля" to 4,
+        "мая" to 5,
+        "июня" to 6,
+        "июля" to 7,
+        "августа" to 8,
+        "сентября" to 9,
+        "октября" to 10,
+        "ноября" to 11,
+        "декабря" to 12
+    )
+    val (day, month, year) = str.split(" ")
+    if (mapOfMonths.containsKey(month)) {
+        val resMonth = mapOfMonths[month]
+        if (day.toInt() > daysInMonth(
+                resMonth!!,
+                year.toInt()
+            ) || day.toInt() < 1
+        ) return ""
+        return String.format(
+            "%02d.%02d.%d",
+            day.toInt(),
+            resMonth,
+            year.toInt()
         )
-            if (line[1] == "февраля") month = 2
     }
-    if (month == 0) return String.format("")
-    return String.format("%02d.%02d.%d", day, month, year)
+    return ""
 }
 
 
@@ -126,39 +127,32 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val line = digital.split(".").toMutableList()
-    if (line.count() != 3) return String.format("")
-    var month = ""
-    val day = line[0].toIntOrNull()
-    val year = line[2].toIntOrNull()
-    if (day !in 1..31) return String.format("")
-    if (year != null && day != null) {
-        if (day in 1..31) {
-            when (line[1]) {
-                "01" -> month = "января"
-                "03" -> month = "марта"
-                "05" -> month = "мая"
-                "07" -> month = "июля"
-                "08" -> month = "августа"
-                "10" -> month = "октября"
-                "12" -> month = "декабря"
-            }
-        }
-        if (day in 1..30) {
-            when (line[1]) {
-                "04" -> month = "апреля"
-                "06" -> month = "июня"
-                "09" -> month = "сентября"
-                "11" -> month = "ноября"
-            }
-        }
-        if (day in 1..28 || (day in 1..29 && year % 4 == 0
-                    && year % 100 != 0 || (year % 400 == 0))
+    if (!digital.matches(Regex("""\d+\.\d+\.\d+"""))) return ""
+    val (day, month, year) = digital.split(".")
+    val mapOfMonths = mapOf(
+        1 to "января",
+        2 to "февраля",
+        3 to "марта",
+        4 to "апреля",
+        5 to "мая",
+        6 to "июня",
+        7 to "июля",
+        8 to "августа",
+        9 to "сентября",
+        10 to "октября",
+        11 to "ноября",
+        12 to "декабря"
+    )
+    if (mapOfMonths.containsKey(month.toInt()) && day.toInt() > 0
+        && day.toInt() < daysInMonth(month.toInt(), year.toInt())
+    )
+        return String.format(
+            "%d %s %d",
+            day.toInt(),
+            mapOfMonths[month.toInt()],
+            year.toInt()
         )
-            if (line[1] == "02") month = "февраля"
-    }
-    if (month == "") return String.format("")
-    return String.format("%d %s %d", day, month, year)
+    return ""
 }
 
 /**
@@ -201,13 +195,19 @@ fun bestLongJump(jumps: String): Int = TODO()
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    val line = jumps.split(' ').toMutableList()
-    var result = -10
+    var result = -1
+    if (!jumps.contains(Regex("""\d+ \+"""))
+        || jumps.contains(Regex("""\d+[+|%|+|-]"""))
+        || jumps.contains(Regex("""[+|%|+|-]+\d"""))
+        || !jumps.contains(Regex("""\d+ \+"""))
+        || jumps.contains(Regex("""[+|%|+|-]+ [+|%|+|-]"""))
+        || jumps.contains(Regex("""\d+ \d"""))
+    ) return result
+    val line = jumps.split(" ").toList()
     for (i in line.indices)
         if (line[i] == "+" && line[i - 1].toIntOrNull() != null)
             result = maxOf(line[i - 1].toInt(), result)
-    return if (result > 0) result
-    else -1
+    return result
 }
 
 /**

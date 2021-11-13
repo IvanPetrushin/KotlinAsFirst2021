@@ -135,7 +135,7 @@ fun dateDigitToStr(digital: String): String {
         12 to "декабря"
     )
     if (mapOfMonths.containsKey(month.toInt()) && day.toInt() > 0
-        && day.toInt() < daysInMonth(month.toInt(), year.toInt())
+        && day.toInt() <= daysInMonth(month.toInt(), year.toInt())
     )
         return String.format("%d %s %d", day.toInt(), mapOfMonths[month.toInt()], year.toInt())
     return ""

@@ -352,32 +352,31 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+fun bagPacking(
+    treasures: Map<String, Pair<Int, Int>>,
+    capacity: Int
+): Set<String> {
     val backpack = Array(treasures.size + 1) { Array(capacity + 1) { 0 } }
-    val namesOfTresuares = Array(treasures.size + 1) { Array(capacity + 1) { mutableSetOf<String>() } }
+    val namesOfTresuares =
+        Array(treasures.size + 1) { Array(capacity + 1) { mutableSetOf<String>() } }
     for (i in 1..treasures.size) {
         val name = treasures.toList()[i - 1].first
         val weight = treasures.toList()[i - 1].second.first
         val value = treasures.toList()[i - 1].second.second
         for (j in 1..capacity) {
-            if (i == 0 || j == 0) {
-                namesOfTresuares[i][j] = mutableSetOf()
-                backpack[i][j] = 0
+            if (weight > j) {
+                backpack[i][j] = backpack[i - 1][j]
+                namesOfTresuares[i][j] = namesOfTresuares[i - 1][j]
             } else {
-                if (weight > j) {
-                    backpack[i][j] = backpack[i - 1][j]
+                val prevValue = backpack[i - 1][j]
+                val nextValue = value + backpack[i - 1][j - weight]
+                if (prevValue > nextValue) {
+                    backpack[i][j] = prevValue
                     namesOfTresuares[i][j] = namesOfTresuares[i - 1][j]
                 } else {
-                    val prevValue = backpack[i - 1][j]
-                    val nextValue = value + backpack[i - 1][j - weight]
-                    if (prevValue > nextValue) {
-                        backpack[i][j] = prevValue
-                        namesOfTresuares[i][j] = namesOfTresuares[i - 1][j]
-                    } else {
-                        backpack[i][j] = nextValue
-                        namesOfTresuares[i][j].add(name)
-                        namesOfTresuares[i][j].addAll(namesOfTresuares[i - 1][j - weight])
-                    }
+                    backpack[i][j] = nextValue
+                    namesOfTresuares[i][j].add(name)
+                    namesOfTresuares[i][j].addAll(namesOfTresuares[i - 1][j - weight])
                 }
             }
         }

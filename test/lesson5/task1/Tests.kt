@@ -370,5 +370,18 @@ class Tests {
                 1500
             )
         )
+        assertEquals(
+            emptySet<String>(),
+            bagPacking(
+                emptyMap(), capacity = 15000
+            )
+        )
+        assertEquals(
+            emptySet<String>(),
+            bagPacking(
+                mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000), "Что-то" to (1500 to 7000)),
+                0
+            )
+        )
     }
 }

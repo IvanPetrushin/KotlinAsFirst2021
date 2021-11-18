@@ -2,6 +2,7 @@
 
 package lesson6.task1
 
+import kotlinx.html.attributes.stringSetDecode
 import lesson2.task2.daysInMonth
 import lesson3.task1.fib
 import lesson4.task1.sqRoots
@@ -172,18 +173,16 @@ fun bestLongJump(jumps: String): Int = TODO()
  */
 fun bestHighJump(jumps: String): Int {
     var result = -1
-    if (!jumps.contains(Regex("""\d+ \+"""))
-        || jumps.contains(Regex("""[a-z]"""))
-        || jumps.contains(Regex("""\d+[+|%|+|-]"""))
-        || jumps.contains(Regex("""[+|%|+|-]+\d"""))
-        || !jumps.contains(Regex("""\d+ [\+|\-|\%]"""))
-        || jumps.contains(Regex("""[+|%|+|-]+ [+|%|+|-]"""))
-        || jumps.contains(Regex("""\d+ \d"""))
-    ) return result
     val line = jumps.split(" ").toList()
-    for (i in line.indices)
-        if (line[i] == "+" && line[i - 1].toIntOrNull() != null)
-            result = maxOf(line[i - 1].toInt(), result)
+    for (i in line.indices) {
+        if (!Regex("""[-+%0-9]+""").matches(line[i])
+            || line[i].contains(Regex("""(\d+[-+%]|[-+%]+\d+)"""))) return -1
+        else if (line[i] == "+") {
+            if (line[i - 1].toIntOrNull() != null)
+                result = maxOf(line[i - 1].toInt(), result)
+            else return -1
+        }
+    }
     return result
 }
 

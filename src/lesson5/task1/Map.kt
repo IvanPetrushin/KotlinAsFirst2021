@@ -383,8 +383,3 @@ fun bagPacking(
     }
     return namesOfTresuares[treasures.size][capacity]
 }
-
-
-
-
-

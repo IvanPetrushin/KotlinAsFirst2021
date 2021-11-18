@@ -94,9 +94,12 @@ class Tests {
         assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
         assertEquals(2, bestHighJump("2 +"))
         assertEquals(-1, bestHighJump("% +"))
-        assertEquals(-1, bestHighJump("%220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
-        assertEquals(-1, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
-
+        assertEquals(-1, bestHighJump(" 220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
+        assertEquals(-1, bestHighJump("%+ 255  +"))
+        assertEquals(-1, bestHighJump("220+ 550 +"))
+        assertEquals(-1, bestHighJump("%220 + 330 +"))
+        assertEquals(-1, bestHighJump("%+ 255 + +"))
+        assertEquals(255, bestHighJump("%+ 255 + %-"))
     }
 
     @Test

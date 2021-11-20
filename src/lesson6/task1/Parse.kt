@@ -6,8 +6,10 @@ import kotlinx.html.attributes.stringSetDecode
 import lesson2.task2.daysInMonth
 import lesson3.task1.fib
 import lesson4.task1.sqRoots
+import lesson7.task1.printMultiplicationProcess
 import java.io.File
 import java.lang.IllegalArgumentException
+import java.rmi.server.RemoteRef
 import kotlin.reflect.typeOf
 
 // Урок 6: разбор строк, исключения
@@ -173,10 +175,11 @@ fun bestLongJump(jumps: String): Int = TODO()
  */
 fun bestHighJump(jumps: String): Int {
     var result = -1
-    val line = jumps.split(" ").toList()
+    val line = jumps.split(" ")
     for (i in line.indices) {
         if (!Regex("""[-+%0-9]+""").matches(line[i])
-            || line[i].contains(Regex("""(\d+[-+%]|[-+%]+\d+)"""))) return -1
+            || line[i].contains(Regex("""(\d+[-+%]|[-+%]+\d+)"""))
+        ) return -1
         else if (line[i] == "+") {
             if (line[i - 1].toIntOrNull() != null)
                 result = maxOf(line[i - 1].toInt(), result)
@@ -196,7 +199,20 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val regex = Regex("""(?<=\d) """)
+    val line = expression.split(regex)
+    if (!line[0].matches(Regex("""\d+"""))) throw IllegalArgumentException()
+    var result = line[0].toInt()
+    for (i in 1 until line.size) {
+        if (!line[i].matches(Regex("""[-+]+ \d+""")))
+            throw IllegalArgumentException()
+        val digitWithSign = line[i].split(" ")
+        if (digitWithSign[0] == "+") result += digitWithSign[1].toInt()
+        else result -= digitWithSign[1].toInt()
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -271,6 +287,10 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> =
+fun computeDeviceCells(
+    cells: Int,
+    commands: String,
+    limit: Int
+): List<Int> =
     TODO()
 

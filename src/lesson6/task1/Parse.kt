@@ -86,17 +86,13 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     if (!str.matches(Regex("""\d+ ([а-я])+ \d+"""))) return ""
-    val MonthsToString = listOf(
+    val monthsToString = listOf(
         "января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря"
     )
     val (day, month, year) = str.split(" ")
-    val monthToInt = MonthsToString.indexOf(month) + 1
-    if (monthToInt in 1..12 && day.toInt() in 1..daysInMonth(
-            monthToInt,
-            year.toInt()
-        )
-    )
+    val monthToInt = monthsToString.indexOf(month) + 1
+    if (correctFormat(monthToInt, day, year))
         return String.format(
             "%02d.%02d.%d",
             day.toInt(),
@@ -104,6 +100,20 @@ fun dateStrToDigit(str: String): String {
             year.toInt()
         )
     return ""
+}
+
+private fun correctFormat(
+    monthToInt: Int,
+    day: String,
+    year: String
+): Boolean {
+    if (monthToInt in 1..12 && day.toInt() in 1..daysInMonth(
+            monthToInt,
+            year.toInt()
+        )
+    )
+        return true
+    return false
 }
 
 
@@ -120,16 +130,12 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     if (!digital.matches(Regex("""\d{2}+\.\d{2}+\.\d+"""))) return ""
     val (day, month, year) = digital.split(".")
-    val MonthsToString = listOf(
+    val monthsToString = listOf(
         "января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря"
     )
-    return if (month.toInt() in 1..12 && day.toInt() in 1..daysInMonth(
-            month.toInt(),
-            year.toInt()
-        )
-    ) {
-        val finalMonth = MonthsToString[month.toInt() - 1]
+    return if (correctFormat(month.toInt(), day, year)) {
+        val finalMonth = monthsToString[month.toInt() - 1]
         String.format("%d %s %d", day.toInt(), finalMonth, year.toInt())
     } else ""
 }
@@ -175,20 +181,34 @@ fun bestLongJump(jumps: String): Int = TODO()
  */
 fun bestHighJump(jumps: String): Int {
     var result = -1
-    val line = jumps.split(" ")
-    for (i in line.indices) {
-        if (!Regex("""[-+%0-9]+""").matches(line[i])
-            || line[i].contains(Regex("""(\d+[-+%]|[-+%]+\d+)"""))
-        ) return -1
-        else if (line[i] == "+") {
-            if (line[i - 1].toIntOrNull() != null)
-                result = maxOf(line[i - 1].toInt(), result)
-            else return -1
+    var str = ""
+    for (i in jumps.indices) {
+        if (jumps[i] in "+-%" && i != jumps.lastIndex) {
+            if (jumps[i + 1] in "+-%") {
+                str += jumps[i] + " "
+            } else str += jumps[i]
+        } else str += jumps[i]
+    }
+    val line = str.split(" ")
+    if (line.indices.count() % 2 != 0) return result
+    for (i in line.indices step 2) {
+        if (i != line.lastIndex) {
+            if (!Regex("""\d+[-+%]""").matches(line[i] + line[i + 1])
+                && !Regex("""[-+%]{2}""").matches(line[i] + line[i + 1])
+                && !Regex("""[-+%]+\d+""").matches(line[i] + line[i + 1])
+            )
+                return -1
+            if ((line[i] + line[i + 1]).matches(Regex("""\d+\+""")) ||
+                (line[i] + line[i + 1]).matches(Regex("""\++\d+"""))
+            )
+                result = maxOf(
+                    ((line[i] + line[i + 1]).removeSuffix("+")
+                        .removePrefix("+")).toInt(), result
+                )
         }
     }
     return result
 }
-
 
 /**
  * Сложная (6 баллов)
@@ -236,7 +256,24 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+//    val products = description.split("; ")
+//    var cost = 0.0
+//    var nameOfProduct = ""
+//    for (i in products.indices) {
+//        if (!products[i].matches(Regex("""[А-я]+ \d+$"""))
+//            && !products[i].matches(Regex("""[А-я]+ \d+\.\d+$""")))
+//            return ""
+//        val product = products[i].split(" ")
+//        if (product[1].toDouble() > cost) {
+//            cost = product[1].toDouble()
+//            nameOfProduct = product[0]
+//        }
+//    }
+//    if (cost > 0) return nameOfProduct
+//    return ""
+    TODO()
+}
 
 /**
  * Сложная (6 баллов)
@@ -293,4 +330,3 @@ fun computeDeviceCells(
     limit: Int
 ): List<Int> =
     TODO()
-

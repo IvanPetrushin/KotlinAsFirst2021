@@ -173,7 +173,6 @@ fun string(line: String, maxLen: Int): String {
             var extraspace =
                 space - space / (line.trim().split(" ")
                     .count() - 1) * (line.trim().split(" ").count() - 1)
-            println(line.trim())
             for (word in line.trim().split(" ")) {
                 append(word)
                 append(" ")
@@ -199,9 +198,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
     for (line in inputFile) {
         if (line.isBlank()) outputFile.newLine()
-        else if (line.trim()
-                .matches(Regex("""[А-я0-9A-z]+""")) || line.trim().length == maxLen
-        ) {
+        else if (line.trim().count{ it == ' '} == 0 || line.trim().length == maxLen) {
             outputFile.write(line.trim())
             outputFile.newLine()
         } else {

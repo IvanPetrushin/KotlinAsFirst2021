@@ -189,6 +189,9 @@ fun string(line: String, maxLen: Int): String {
         }
     }
 }
+//   аа --- аа - АА, аа --- Аа / АА\nаа\nАА:      аа           Аа     /
+//   аа --- аа - АА, аа --- Аа / АА\nаа\nАА:        аа       Аа       /
+
 
 fun alignFileByWidth(inputName: String, outputName: String) {
     val inputFile = File(inputName).readLines()
@@ -198,7 +201,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
     for (line in inputFile) {
         if (line.isBlank()) outputFile.newLine()
-        else if (line.trim().count{ it == ' '} == 0 || line.trim().length == maxLen) {
+        else if (line.trim().count{ it == ' '} == 0) {
             outputFile.write(line.trim())
             outputFile.newLine()
         } else {

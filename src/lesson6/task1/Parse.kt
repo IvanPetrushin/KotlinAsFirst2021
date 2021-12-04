@@ -4,9 +4,11 @@ package lesson6.task1
 
 import kotlinx.html.attributes.stringSetDecode
 import lesson2.task2.daysInMonth
+import lesson2.task2.queenThreatens
 import lesson3.task1.fib
 import lesson4.task1.sqRoots
 import lesson7.task1.printMultiplicationProcess
+import org.junit.Test
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.rmi.server.RemoteRef
@@ -104,17 +106,8 @@ fun dateStrToDigit(str: String): String {
 
 private fun correctFormat(
     monthToInt: Int,
-    day: String,
-    year: String
-): Boolean {
-    if (monthToInt in 1..12 && day.toInt() in 1..daysInMonth(
-            monthToInt,
-            year.toInt()
-        )
-    )
-        return true
-    return false
-}
+    day: String, year: String
+): Boolean = monthToInt in 1..12 && day.toInt() in 1..daysInMonth(monthToInt, year.toInt())
 
 
 /**
@@ -181,15 +174,22 @@ fun bestLongJump(jumps: String): Int = TODO()
  */
 fun bestHighJump(jumps: String): Int {
     var result = -1
-    var str = ""
-    for (i in jumps.indices) {
-        if (jumps[i] in "+-%" && i != jumps.lastIndex) {
-            if (jumps[i + 1] in "+-%") {
-                str += jumps[i] + " "
-            } else str += jumps[i]
-        } else str += jumps[i]
+    if (!jumps.contains(Regex("""^%+[-+]|^\d+ [+-]"""))
+        || jumps.contains(Regex("""% [-+]"""))
+    ) return result
+    fun str(jumps: String): String {
+        return buildString {
+            for (i in jumps.indices) {
+                if (jumps[i] in "+-%" && i != jumps.lastIndex) {
+                    if (jumps[i + 1] in "+-%") {
+                        append(jumps[i] + " ")
+                    } else append(jumps[i])
+                } else append(jumps[i])
+            }
+        }
     }
-    val line = str.split(" ")
+
+    val line = str(jumps).split(" ")
     if (line.indices.count() % 2 != 0) return result
     for (i in line.indices step 2) {
         if (i != line.lastIndex) {
@@ -313,3 +313,4 @@ fun computeDeviceCells(
     limit: Int
 ): List<Int> =
     TODO()
+

@@ -2,7 +2,9 @@
 
 package lesson7.task1
 
+import lesson2.task1.whichRookThreatens
 import ru.spbstu.wheels.NullableMonad.filter
+import ru.spbstu.wheels.out
 import java.io.File
 
 // Урок 7: работа с файлами
@@ -76,14 +78,23 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+fun countSubstrings(
+    inputName: String,
+    substrings: List<String>
+): Map<String, Int> {
     val result = mutableMapOf<String, Int>()
     val fileToString = File(inputName).readLines().toString().lowercase()
-    for (i in substrings.indices) {
-        result[substrings[i]] = 0
-        for (indexOfSymbol in fileToString.indices)
-            if (fileToString.startsWith(substrings[i].lowercase(), indexOfSymbol))
-                result[substrings[i]] = result[substrings[i]]!! + 1
+    for (word in substrings) {
+        var index = -1
+        val list = mutableSetOf<Int>()
+        while (index < fileToString.lastIndex) {
+            index++
+            if (fileToString.indexOf(word.lowercase(), index) !in list) {
+                list.add(fileToString.indexOf(word.lowercase(), index))
+                index = fileToString.indexOf(word.lowercase(), index)
+            }
+        }
+        result[word] = list.count { it > 0 }
     }
     return result
 }
@@ -154,8 +165,48 @@ fun centerFile(inputName: String, outputName: String) {
  * 7) В самой длинной строке каждая пара соседних слов должна быть отделена В ТОЧНОСТИ одним пробелом
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
+
+fun string(line: String, maxLen: Int): String {
+    return buildString {
+        val space = maxLen - line.trim().length
+        var extraspace =
+            space - space / (line.trim().split(" ").count() - 1) * (line.trim()
+                .split(" ").count() - 1)
+        for (word in line.trim().split(" ")) {
+            append(word)
+            append(" ")
+            if (extraspace > 0) {
+                append(" ")
+                extraspace--
+            }
+            var spacesCount = space / (line.trim().split(" ").count() - 1)
+            while (spacesCount > 0) {
+                append(" ")
+                spacesCount--
+            }
+
+        }
+    }
+}
+
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val inputFile = File(inputName).readLines()
+    val maxLen = inputFile.maxOfOrNull {
+        it.replace(Regex("""[ ]+"""), " ").trim().length
+    }
+    val outputFile = File(outputName).bufferedWriter()
+    for (line in inputFile) {
+        if (line.isBlank()) outputFile.newLine()
+        else if (line.trim().matches(Regex("""[А-я0-9A-z]+""")) || line.trim().length == maxLen
+        ) {
+            outputFile.write(line.trim())
+            outputFile.newLine()
+        } else {
+            outputFile.write(string(line, maxLen!!).trim())
+            outputFile.newLine()
+        }
+    }
+    outputFile.close()
 }
 
 /**

@@ -169,22 +169,24 @@ fun centerFile(inputName: String, outputName: String) {
 fun string(line: String, maxLen: Int): String {
     return buildString {
         val space = maxLen - line.trim().length
-        var extraspace =
-            space - space / (line.trim().split(" ").count() - 1) * (line.trim()
-                .split(" ").count() - 1)
-        for (word in line.trim().split(" ")) {
-            append(word)
-            append(" ")
-            if (extraspace > 0) {
+        if ((line.trim().split(" ").count() - 1) != 0) {
+            var extraspace =
+                space - space / (line.trim().split(" ")
+                    .count() - 1) * (line.trim().split(" ").count() - 1)
+            println(line.trim())
+            for (word in line.trim().split(" ")) {
+                append(word)
                 append(" ")
-                extraspace--
+                if (extraspace > 0) {
+                    append(" ")
+                    extraspace--
+                }
+                var spacesCount = space / (line.trim().split(" ").count() - 1)
+                while (spacesCount > 0) {
+                    append(" ")
+                    spacesCount--
+                }
             }
-            var spacesCount = space / (line.trim().split(" ").count() - 1)
-            while (spacesCount > 0) {
-                append(" ")
-                spacesCount--
-            }
-
         }
     }
 }
@@ -197,7 +199,8 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
     for (line in inputFile) {
         if (line.isBlank()) outputFile.newLine()
-        else if (line.trim().matches(Regex("""[А-я0-9A-z]+""")) || line.trim().length == maxLen
+        else if (line.trim()
+                .matches(Regex("""[А-я0-9A-z]+""")) || line.trim().length == maxLen
         ) {
             outputFile.write(line.trim())
             outputFile.newLine()

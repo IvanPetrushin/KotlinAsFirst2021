@@ -170,10 +170,11 @@ fun centerFile(inputName: String, outputName: String) {
 fun string(line: String, maxLen: Int): String {
     return buildString {
         val space = maxLen - line.trim().length
-        if ((line.trim().split(Regex("""\s""")).count() - 1) != 0) {
+        if ((line.trim().split(Regex("""\s+""")).count() - 1) != 0) {
             var extraspace =
-                space - space / (line.trim().split(Regex("""\s"""))
-                    .count() - 1) * (line.trim().split(Regex("""\s""")).count() - 1)
+                space - space / (line.trim().split(Regex("""\s+"""))
+                    .count() - 1) * (line.trim().split(Regex("""\s+"""))
+                    .count() - 1)
             for (word in line.trim().split(" ")) {
                 append(word)
                 append(" ")
@@ -181,7 +182,8 @@ fun string(line: String, maxLen: Int): String {
                     append(" ")
                     extraspace--
                 }
-                var spacesCount = space / (line.trim().split(Regex("""\s""")).count() - 1)
+                var spacesCount =
+                    space / (line.trim().split(Regex("""\s+""")).count() - 1)
                 while (spacesCount > 0) {
                     append(" ")
                     spacesCount--
@@ -199,7 +201,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     val outputFile = File(outputName).bufferedWriter()
     for (line in inputFile) {
         if (line.isBlank()) outputFile.newLine()
-        else if (line.trim().count{ it == ' '} == 0 || line.trim().length == maxLen) {
+        else if (line.trim()
+                .count { it == ' ' } == 0 || line.trim().length == maxLen
+        ) {
             outputFile.write(line.trim())
             outputFile.newLine()
         } else {
@@ -209,6 +213,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     }
     outputFile.close()
 }
+
 
 /**
  * Средняя (14 баллов)

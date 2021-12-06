@@ -173,18 +173,22 @@ fun string(line: String, maxLen: Int): String {
     //(?<=\s)
     return buildString {
         val space = maxLen - line.trim().length + line.trim().count { it == ' ' }
-        println(space)
         if ((line.trim().split(Regex("""\s+""")).count() - 1) != 0) {
             var extraspace =
                 space - space / (line.trim().split(Regex("""\s+"""))
                     .count() - 1) * (line.trim().split(Regex("""\s+"""))
                     .count() - 1)
-            val spaceCount = space / (line.trim().split(Regex("""\s+""")).count() - 1)
-            println(spaceCount)
-            for (word in line.trim().split(" ")) {
-                println(word)
+            for (word in line.split(Regex("""[ ]+"""))) {
                 append(word)
-
+                var spaceCount = space / (line.trim().split(Regex("""\s+""")).count() - 1)
+                while (spaceCount > 0) {
+                    append(" ")
+                    spaceCount--
+                }
+                if (extraspace > 0) {
+                    append(" ")
+                    extraspace--
+                }
             }
         }
 

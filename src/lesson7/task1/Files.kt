@@ -170,34 +170,29 @@ fun centerFile(inputName: String, outputName: String) {
  */
 
 fun string(line: String, maxLen: Int): String {
+    //(?<=\s)
     return buildString {
-        val space = maxLen - line.trim().length
+        val space = maxLen - line.trim().length + line.trim().count { it == ' ' }
+        println(space)
         if ((line.trim().split(Regex("""\s+""")).count() - 1) != 0) {
             var extraspace =
                 space - space / (line.trim().split(Regex("""\s+"""))
                     .count() - 1) * (line.trim().split(Regex("""\s+"""))
                     .count() - 1)
-            for (word in line.trim().split(Regex("""(?<=\s)"""))) {
+            val spaceCount = space / (line.trim().split(Regex("""\s+""")).count() - 1)
+            println(spaceCount)
+            for (word in line.trim().split(" ")) {
+                println(word)
                 append(word)
-                if (!word.matches(Regex("""[ ]+"""))) {
-                    if (extraspace > 0) {
-                        append(" ")
-                        extraspace--
-                    }
-                    var spacesCount =
-                        space / (line.trim().split(Regex("""\s+"""))
-                            .count() - 1)
-                    while (spacesCount > 0) {
-                        append(" ")
-                        spacesCount--
-                    }
-                }
+
             }
         }
+
     }
 }
 
 fun alignFileByWidth(inputName: String, outputName: String) {
+   // FileWriter("input/width_in1.txt").use { it.write("БАВА - бава --- бава / БАВА: бава бава\nбава  БАВА / бава -- ")}
     val inputFile = File(inputName).readLines()
     val maxLen = inputFile.maxOfOrNull {
         it.replace(Regex("""[ ]+"""), " ").trim().length
@@ -216,35 +211,6 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         }
     }
     outputFile.close()
-
-
-//    val textToList = mutableListOf<String>()
-//    for (line in File(inputName).readLines()) {
-//        val withoutSpaces = line.trim(' ').replace("[ ]+".toRegex(), " ")
-//        textToList.add(withoutSpaces)
-//    }
-//    var maxLength = textToList.maxOf { it.length }
-//    println(maxLength)
-//    val outputFile = File(outputName).bufferedWriter()
-//    for (line in textToList) {
-//        val words = line.split(" ").toMutableList()
-//        if (line.isBlank()) outputFile.newLine()
-//        else if (words.size == 1) {
-//            outputFile.write(line)
-//            outputFile.newLine()
-//        } else {
-//            var remainingSpaces = maxLength - line.length
-//            var i = 0
-//            while (remainingSpaces > 0) {
-//                words[i] += " "
-//                if (i < words.size - 2) i++ else i = 0
-//                remainingSpaces--
-//            }
-//            outputFile.write(words.joinToString(" "))
-//            outputFile.newLine()
-//        }
-//    }
-//    outputFile.close()
 }
 
 

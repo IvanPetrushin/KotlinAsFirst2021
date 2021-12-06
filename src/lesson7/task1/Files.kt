@@ -7,6 +7,8 @@ import lesson8.task1.lineBySegment
 import ru.spbstu.wheels.NullableMonad.filter
 import ru.spbstu.wheels.out
 import java.io.File
+import java.io.FileWriter
+import kotlin.math.max
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -175,18 +177,20 @@ fun string(line: String, maxLen: Int): String {
                 space - space / (line.trim().split(Regex("""\s+"""))
                     .count() - 1) * (line.trim().split(Regex("""\s+"""))
                     .count() - 1)
-            for (word in line.trim().split(" ")) {
+            for (word in line.trim().split(Regex("""(?<=\s)"""))) {
                 append(word)
-                append(" ")
-                if (extraspace > 0) {
-                    append(" ")
-                    extraspace--
-                }
-                var spacesCount =
-                    space / (line.trim().split(Regex("""\s+""")).count() - 1)
-                while (spacesCount > 0) {
-                    append(" ")
-                    spacesCount--
+                if (!word.matches(Regex("""[ ]+"""))) {
+                    if (extraspace > 0) {
+                        append(" ")
+                        extraspace--
+                    }
+                    var spacesCount =
+                        space / (line.trim().split(Regex("""\s+"""))
+                            .count() - 1)
+                    while (spacesCount > 0) {
+                        append(" ")
+                        spacesCount--
+                    }
                 }
             }
         }
@@ -212,6 +216,35 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         }
     }
     outputFile.close()
+
+
+//    val textToList = mutableListOf<String>()
+//    for (line in File(inputName).readLines()) {
+//        val withoutSpaces = line.trim(' ').replace("[ ]+".toRegex(), " ")
+//        textToList.add(withoutSpaces)
+//    }
+//    var maxLength = textToList.maxOf { it.length }
+//    println(maxLength)
+//    val outputFile = File(outputName).bufferedWriter()
+//    for (line in textToList) {
+//        val words = line.split(" ").toMutableList()
+//        if (line.isBlank()) outputFile.newLine()
+//        else if (words.size == 1) {
+//            outputFile.write(line)
+//            outputFile.newLine()
+//        } else {
+//            var remainingSpaces = maxLength - line.length
+//            var i = 0
+//            while (remainingSpaces > 0) {
+//                words[i] += " "
+//                if (i < words.size - 2) i++ else i = 0
+//                remainingSpaces--
+//            }
+//            outputFile.write(words.joinToString(" "))
+//            outputFile.newLine()
+//        }
+//    }
+//    outputFile.close()
 }
 
 

@@ -170,17 +170,19 @@ fun centerFile(inputName: String, outputName: String) {
  */
 
 fun string(line: String, maxLen: Int): String {
-    //(?<=\s)
     return buildString {
-        val space = maxLen - line.trim().length + line.trim().count { it == ' ' }
-        if ((line.trim().split(Regex("""\s+""")).count() - 1) != 0) {
+        val space =
+            maxLen - line.trim().length + line.trim().count { it == ' ' }
+        if ((line.trim().split(Regex("""[ ]+""")).count() - 1) != 0) {
             var extraspace =
-                space - space / (line.trim().split(Regex("""\s+"""))
-                    .count() - 1) * (line.trim().split(Regex("""\s+"""))
-                    .count() - 1)
+                space - space / (line.trim().split(Regex("""[ ]+"""))
+                    .count() - 1) * (line.trim().split(Regex("""[ ]+"""))
+                    .count() - 1) + 1
             for (word in line.split(Regex("""[ ]+"""))) {
                 append(word)
-                var spaceCount = space / (line.trim().split(Regex("""\s+""")).count() - 1)
+                var spaceCount =
+                    space / (line.trim().split(Regex("""[ ]+"""))
+                        .count() - 1)
                 while (spaceCount > 0) {
                     append(" ")
                     spaceCount--
@@ -196,7 +198,6 @@ fun string(line: String, maxLen: Int): String {
 }
 
 fun alignFileByWidth(inputName: String, outputName: String) {
-   // FileWriter("input/width_in1.txt").use { it.write("БАВА - бава --- бава / БАВА: бава бава\nбава  БАВА / бава -- ")}
     val inputFile = File(inputName).readLines()
     val maxLen = inputFile.maxOfOrNull {
         it.replace(Regex("""[ ]+"""), " ").trim().length

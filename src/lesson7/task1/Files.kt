@@ -177,7 +177,8 @@ fun string(line: String, maxLen: Int): String {
             var extraspace =
                 space - space / (line.trim().split(Regex("""[ ]+"""))
                     .count() - 1) * (line.trim().split(Regex("""[ ]+"""))
-                    .count() - 1) + 1
+                    .count() - 1)
+            println(line.split(Regex("""[ ]+""")))
             for (word in line.split(Regex("""[ ]+"""))) {
                 append(word)
                 var spaceCount =
@@ -187,7 +188,7 @@ fun string(line: String, maxLen: Int): String {
                     append(" ")
                     spaceCount--
                 }
-                if (extraspace > 0) {
+                if (extraspace > 0 && word.isNotEmpty()) {
                     append(" ")
                     extraspace--
                 }

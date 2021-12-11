@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import jdk.jfr.FlightRecorder
 import lesson2.task1.whichRookThreatens
 import lesson8.task1.lineBySegment
 import ru.spbstu.wheels.NullableMonad.filter
@@ -178,7 +179,6 @@ fun string(line: String, maxLen: Int): String {
                 space - space / (line.trim().split(Regex("""[ ]+"""))
                     .count() - 1) * (line.trim().split(Regex("""[ ]+"""))
                     .count() - 1)
-            println(line.split(Regex("""[ ]+""")))
             for (word in line.split(Regex("""[ ]+"""))) {
                 append(word)
                 var spaceCount =
@@ -359,7 +359,33 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    fun newText(inputName: String): String {
+        var previousLine = ""
+        return buildString {
+            File(inputName).forEachLine { line ->
+                if (line.isBlank() && previousLine.isNotBlank()) {
+                    append("</p>$line\n<p>\n")
+                } else append("$line\n")
+                previousLine = line
+            }
+        }
+    }
+
+    fun toHTML(text: String): String {
+        var HTMLtext = text
+        while ("**" in HTMLtext || "*" in HTMLtext || "~~" in HTMLtext) {
+            HTMLtext = HTMLtext.replaceFirst("**", "<b>")
+            HTMLtext = HTMLtext.replaceFirst("**", "</b>")
+            HTMLtext = HTMLtext.replaceFirst("*", "<i>")
+            HTMLtext = HTMLtext.replaceFirst("*", "</i>")
+            HTMLtext = HTMLtext.replaceFirst("~~", "<s>")
+            HTMLtext = HTMLtext.replaceFirst("~~", "</s>")
+        }
+        return HTMLtext
+    }
+
+    val text = "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
+    File(outputName).bufferedWriter().use { it.write(toHTML(text)) }
 }
 
 /**

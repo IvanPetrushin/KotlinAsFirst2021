@@ -388,6 +388,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use { it.write(toHTML(text)) }
 }
 
+
 /**
  * Сложная (23 балла)
  *

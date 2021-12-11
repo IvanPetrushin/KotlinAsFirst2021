@@ -371,26 +371,22 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
     }
 
-    fun toHTML(text: String): String {
+    var text =
+        "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
+
+    fun toHTML(text: String, initial: String, new1: String, new2: String): String {
         var HTMLtext = text
-        while ("**" in HTMLtext) {
-            HTMLtext = HTMLtext.replaceFirst("**", "<b>")
-            HTMLtext = HTMLtext.replaceFirst("**", "</b>")
-        }
-        while ("*" in HTMLtext) {
-            HTMLtext = HTMLtext.replaceFirst("*", "<i>")
-            HTMLtext = HTMLtext.replaceFirst("*", "</i>")
-        }
-        while ("~~" in HTMLtext) {
-            HTMLtext = HTMLtext.replaceFirst("~~", "<s>")
-            HTMLtext = HTMLtext.replaceFirst("~~", "</s>")
+        while (initial in HTMLtext) {
+            HTMLtext = HTMLtext.replaceFirst(initial, new1)
+            HTMLtext = HTMLtext.replaceFirst(initial, new2)
         }
         return HTMLtext
     }
 
-    val text =
-        "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
-    File(outputName).bufferedWriter().use { it.write(toHTML(text)) }
+    text = toHTML(text, "**", "<b>", "</b>")
+    text = toHTML(text, "*", "<i>", "</i>")
+    text = toHTML(text, "~~", "<s>", "</s>")
+    File(outputName).bufferedWriter().use { it.write(text) }
 }
 
 /**

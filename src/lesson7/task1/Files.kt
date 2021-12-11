@@ -373,21 +373,25 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
     fun toHTML(text: String): String {
         var HTMLtext = text
-        while ("**" in HTMLtext || "*" in HTMLtext || "~~" in HTMLtext) {
+        while ("**" in HTMLtext) {
             HTMLtext = HTMLtext.replaceFirst("**", "<b>")
             HTMLtext = HTMLtext.replaceFirst("**", "</b>")
+        }
+        while ("*" in HTMLtext) {
             HTMLtext = HTMLtext.replaceFirst("*", "<i>")
             HTMLtext = HTMLtext.replaceFirst("*", "</i>")
+        }
+        while ("~~" in HTMLtext) {
             HTMLtext = HTMLtext.replaceFirst("~~", "<s>")
             HTMLtext = HTMLtext.replaceFirst("~~", "</s>")
         }
         return HTMLtext
     }
 
-    val text = "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
+    val text =
+        "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
     File(outputName).bufferedWriter().use { it.write(toHTML(text)) }
 }
-
 
 /**
  * Сложная (23 балла)

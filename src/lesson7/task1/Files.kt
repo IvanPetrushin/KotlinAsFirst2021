@@ -361,32 +361,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    fun newText(inputName: String): String {
-        var previousLine = ""
-        return buildString {
-            File(inputName).forEachLine { line ->
-                if (line.isBlank() && previousLine.isNotBlank()) {
-                    append("</p>$line\n<p>\n")
-                } else append("$line\n")
-                previousLine = line
-            }
-        }
-    }
-
-    var text = "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
-
-    text = toHTML(text, "**", "<b>", "</b>")
-    text = toHTML(text, "*", "<i>", "</i>")
-    text = toHTML(text, "~~", "<s>", "</s>")
-    File(outputName).bufferedWriter().use { it.write(text) }
-}
-fun toHTML(text: String, initial: String, new1: String, new2: String): String {
-    var HTMLtext = text
-    while (initial in HTMLtext) {
-        HTMLtext = HTMLtext.replaceFirst(initial, new1)
-        HTMLtext = HTMLtext.replaceFirst(initial, new2)
-    }
-    return HTMLtext
+    TODO()
 }
 
 /**

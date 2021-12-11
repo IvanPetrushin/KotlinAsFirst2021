@@ -6,6 +6,7 @@ import jdk.jfr.FlightRecorder
 import lesson2.task1.whichRookThreatens
 import lesson8.task1.lineBySegment
 import ru.spbstu.wheels.NullableMonad.filter
+import ru.spbstu.wheels.Stack
 import ru.spbstu.wheels.out
 import java.io.File
 import java.io.FileWriter
@@ -358,6 +359,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
+
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
     fun newText(inputName: String): String {
         var previousLine = ""
@@ -371,22 +373,20 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
     }
 
-    var text =
-        "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
-
-    fun toHTML(text: String, initial: String, new1: String, new2: String): String {
-        var HTMLtext = text
-        while (initial in HTMLtext) {
-            HTMLtext = HTMLtext.replaceFirst(initial, new1)
-            HTMLtext = HTMLtext.replaceFirst(initial, new2)
-        }
-        return HTMLtext
-    }
+    var text = "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
 
     text = toHTML(text, "**", "<b>", "</b>")
     text = toHTML(text, "*", "<i>", "</i>")
     text = toHTML(text, "~~", "<s>", "</s>")
     File(outputName).bufferedWriter().use { it.write(text) }
+}
+fun toHTML(text: String, initial: String, new1: String, new2: String): String {
+    var HTMLtext = text
+    while (initial in HTMLtext) {
+        HTMLtext = HTMLtext.replaceFirst(initial, new1)
+        HTMLtext = HTMLtext.replaceFirst(initial, new2)
+    }
+    return HTMLtext
 }
 
 /**

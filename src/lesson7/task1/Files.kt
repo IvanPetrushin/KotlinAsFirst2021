@@ -357,8 +357,35 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 
+fun toHTML(text: String): String {
+    var HTMLtext = text
+    while ("**" in HTMLtext || "*" in HTMLtext || "~~" in HTMLtext) {
+        HTMLtext = HTMLtext.replaceFirst("~~", "<s>")
+        HTMLtext = HTMLtext.replaceFirst("~~", "</s>")
+        HTMLtext = HTMLtext.replaceFirst("**", "<b>")
+        HTMLtext = HTMLtext.replaceFirst("**", "</b>")
+        HTMLtext = HTMLtext.replaceFirst("*", "<i>")
+        HTMLtext = HTMLtext.replaceFirst("*", "</i>")
+    }
+    return HTMLtext
+}
+
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    fun newText(inputName: String): String {
+        var previousLine = ""
+        return buildString {
+            File(inputName).forEachLine { line ->
+                val text = toHTML(line)
+                if (text.isBlank() && previousLine.isNotBlank()) {
+                    append("</p>$text\n<p>\n")
+                } else append("$text\n")
+                previousLine = text
+            }
+        }
+    }
+
+    val text = "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
+    File(outputName).bufferedWriter().use { it.write(text) }
 }
 
 /**

@@ -363,13 +363,15 @@ fun toHTML(text: String): String {
         HTMLtext = HTMLtext.replaceFirst("**", "<b>")
         HTMLtext = HTMLtext.replaceFirst("**", "</b>")
     }
-    while ("*" in HTMLtext || "~~" in HTMLtext) {
-        HTMLtext = HTMLtext.replaceFirst("~~", "<s>")
-        HTMLtext = HTMLtext.replaceFirst("~~", "</s>")
+    while ("*" in HTMLtext) {
         HTMLtext = HTMLtext.replaceFirst("*", "<i>")
         HTMLtext = HTMLtext.replaceFirst("*", "</i>")
     }
-    return HTMLtext
+    while ("~~" in HTMLtext) {
+        HTMLtext = HTMLtext.replaceFirst("~~", "<s>")
+        HTMLtext = HTMLtext.replaceFirst("~~", "</s>")
+    }
+return HTMLtext
 }
 
 fun markdownToHtmlSimple(inputName: String, outputName: String) {

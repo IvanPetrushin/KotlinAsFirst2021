@@ -99,11 +99,16 @@ class Tests {
         assertEquals(-1, bestHighJump("220+ 550 +"))
         assertEquals(-1, bestHighJump("%220 + 330 +"))
         assertEquals(-1, bestHighJump("%+ 255 + +"))
-        assertEquals(255, bestHighJump("%+ 255 + %-"))
+        assertEquals(-1, bestHighJump("%+ 255 + %-"))
         assertEquals(-1, bestHighJump("+ 4"))
         assertEquals(-1, bestHighJump("6 6 +"))
         assertEquals(-1, bestHighJump("+ 5 5 +"))
         assertEquals(-1, bestHighJump("5 + % -"))
+        assertEquals(224, bestHighJump("224 %+"))
+        assertEquals(-1, bestHighJump("6 + 7+ 5 +"))
+        assertEquals(-1, bestHighJump("44 % %"))
+
+
     }
 
     @Test
@@ -118,6 +123,8 @@ class Tests {
         assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - -2") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("44 - - 12") }
         assertThrows(IllegalArgumentException::class.java) { plusMinus("4 - + 12") }
+        assertThrows(IllegalArgumentException::class.java) { plusMinus("5 ++ 8") }
+
     }
 
     @Test

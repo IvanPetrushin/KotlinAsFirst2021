@@ -174,38 +174,10 @@ fun bestLongJump(jumps: String): Int = TODO()
  */
 fun bestHighJump(jumps: String): Int {
     var result = -1
-    if (!jumps.contains(Regex("""^%+[-+]|^\d+ [+-]"""))
-        || jumps.contains(Regex("""% [-+]"""))
-    ) return result
-    fun str(jumps: String): String {
-        return buildString {
-            for (i in jumps.indices) {
-                if (jumps[i] in "+-%" && i != jumps.lastIndex) {
-                    if (jumps[i + 1] in "+-%") {
-                        append(jumps[i] + " ")
-                    } else append(jumps[i])
-                } else append(jumps[i])
-            }
-        }
-    }
-
-    val line = str(jumps).split(" ")
-    if (line.indices.count() % 2 != 0) return result
-    for (i in line.indices step 2) {
-        if (i != line.lastIndex) {
-            if (!Regex("""\d+[-+%]""").matches(line[i] + line[i + 1])
-                && !Regex("""[-+%]{2}""").matches(line[i] + line[i + 1])
-                && !Regex("""[-+%]+\d+""").matches(line[i] + line[i + 1])
-            )
-                return -1
-            if ((line[i] + line[i + 1]).matches(Regex("""\d+\+""")) ||
-                (line[i] + line[i + 1]).matches(Regex("""\++\d+"""))
-            )
-                result = maxOf(
-                    ((line[i] + line[i + 1]).removeSuffix("+")
-                        .removePrefix("+")).toInt(), result
-                )
-        }
+    val line = jumps.split(Regex("""(?<=[-+%]) """))
+    for (attempt in line) {
+        if (!attempt.matches(Regex("""\d+ [-+%]+""")) || attempt.count { it == '+' } > 1) return -1
+        if (attempt.contains("+")) result = maxOf(result, attempt.split(" ")[0].toInt())
     }
     return result
 }
@@ -225,7 +197,7 @@ fun plusMinus(expression: String): Int {
     if (!line[0].matches(Regex("""\d+"""))) throw IllegalArgumentException()
     var result = line[0].toInt()
     for (i in 1 until line.size) {
-        if (!line[i].matches(Regex("""[-+]+ \d+""")))
+        if (!line[i].matches(Regex("""[+-] \d+""")))
             throw IllegalArgumentException()
         val digitWithSign = line[i].split(" ")
         if (digitWithSign[0] == "+") result += digitWithSign[1].toInt()

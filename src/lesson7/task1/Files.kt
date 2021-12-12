@@ -90,13 +90,14 @@ fun countSubstrings(
     val result = mutableMapOf<String, Int>()
     val fileToString = File(inputName).readLines().toString().lowercase()
     for (word in substrings) {
+        val words = (substrings.map { word.toLowerCase() }).toHashSet().first()
         var index = -1
         val list = mutableSetOf<Int>()
         while (index < fileToString.lastIndex) {
             index++
-            if (fileToString.indexOf(word.lowercase(), index) !in list) {
-                list.add(fileToString.indexOf(word.lowercase(), index))
-                index = fileToString.indexOf(word.lowercase(), index)
+            if (fileToString.indexOf(words, index) !in list) {
+                list.add(fileToString.indexOf(words, index))
+                index = fileToString.indexOf(words, index)
             }
         }
         result[word] = list.count { it > 0 }
@@ -171,20 +172,17 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 
-fun string(line: String, maxLen: Int): String {
-    return buildString {
+fun string(line: String, maxLen: Int): String =
+    buildString {
         val space =
             maxLen - line.trim().length + line.trim().count { it == ' ' }
-        if ((line.trim().split(Regex("""[ ]+""")).count() - 1) != 0) {
-            var extraspace =
-                space - space / (line.trim().split(Regex("""[ ]+"""))
-                    .count() - 1) * (line.trim().split(Regex("""[ ]+"""))
-                    .count() - 1)
-            for (word in line.split(Regex("""[ ]+"""))) {
+        val wordsInLine = line.trim().split(Regex("""[ ]+"""))
+        val spacesInLine = wordsInLine.count() - 1
+        if (spacesInLine != 0) {
+            var extraspace = space % spacesInLine
+            for (word in wordsInLine) {
                 append(word)
-                var spaceCount =
-                    space / (line.trim().split(Regex("""[ ]+"""))
-                        .count() - 1)
+                var spaceCount = space / spacesInLine
                 while (spaceCount > 0) {
                     append(" ")
                     spaceCount--
@@ -197,29 +195,28 @@ fun string(line: String, maxLen: Int): String {
         }
 
     }
-}
 
 fun alignFileByWidth(inputName: String, outputName: String) {
     val inputFile = File(inputName).readLines()
     val maxLen = inputFile.maxOfOrNull {
         it.replace(Regex("""[ ]+"""), " ").trim().length
     }
-    val outputFile = File(outputName).bufferedWriter()
-    for (line in inputFile) {
-        if (line.isBlank()) outputFile.newLine()
-        else if (line.trim()
-                .count { it == ' ' } == 0 || line.trim().length == maxLen
-        ) {
-            outputFile.write(line.trim())
-            outputFile.newLine()
-        } else {
-            outputFile.write(string(line, maxLen!!).trim())
-            outputFile.newLine()
+    File(outputName).bufferedWriter().use {
+        for (line in inputFile) {
+            if (line.isBlank()) it.newLine()
+            else if (line.trim()
+                    .count { it == ' ' } == 0 || line.trim().length == maxLen
+            ) {
+                it.write(line.trim())
+                it.newLine()
+            } else {
+                it.write(string(line, maxLen!!).trim())
+                it.newLine()
+            }
         }
+        it.close()
     }
-    outputFile.close()
 }
-
 
 /**
  * Средняя (14 баллов)

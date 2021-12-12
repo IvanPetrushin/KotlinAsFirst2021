@@ -359,11 +359,13 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
 
 fun toHTML(text: String): String {
     var HTMLtext = text
-    while ("**" in HTMLtext || "*" in HTMLtext || "~~" in HTMLtext) {
-        HTMLtext = HTMLtext.replaceFirst("~~", "<s>")
-        HTMLtext = HTMLtext.replaceFirst("~~", "</s>")
+    while ("**" in HTMLtext) {
         HTMLtext = HTMLtext.replaceFirst("**", "<b>")
         HTMLtext = HTMLtext.replaceFirst("**", "</b>")
+    }
+    while ("*" in HTMLtext || "~~" in HTMLtext) {
+        HTMLtext = HTMLtext.replaceFirst("~~", "<s>")
+        HTMLtext = HTMLtext.replaceFirst("~~", "</s>")
         HTMLtext = HTMLtext.replaceFirst("*", "<i>")
         HTMLtext = HTMLtext.replaceFirst("*", "</i>")
     }
@@ -384,7 +386,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
     }
 
-    val text = "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
+    val text =
+        "<html>\n<body>\n<p>\n${newText(inputName)}</p>\n</body>\n</html>"
     File(outputName).bufferedWriter().use { it.write(text) }
 }
 

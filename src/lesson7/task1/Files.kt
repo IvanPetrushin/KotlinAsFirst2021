@@ -193,9 +193,7 @@ fun string(line: String, maxLen: Int): String =
                 }
             }
         }
-
     }
-
 fun alignFileByWidth(inputName: String, outputName: String) {
     val inputFile = File(inputName).readLines()
     val maxLen = inputFile.maxOfOrNull {
@@ -217,6 +215,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         it.close()
     }
 }
+
 
 /**
  * Средняя (14 баллов)

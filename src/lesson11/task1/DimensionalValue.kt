@@ -1,7 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson11.task1
 
-import lesson5.task1.containsIn
 import java.lang.IllegalArgumentException
 
 /**

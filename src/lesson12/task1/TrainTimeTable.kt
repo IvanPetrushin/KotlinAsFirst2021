@@ -18,10 +18,11 @@ import java.lang.IllegalArgumentException
  * В конструктор передаётся название станции отправления для данного расписания.
  */
 class TrainTimeTable(val baseStationName: String) {
-//    private val listOfTrains = mutableListOf<Train>()
 
-    private val listOfTrains = mutableMapOf<String, MutableMap<String, Time>>()
-
+    private val listOfTrains = mutableListOf<Train>()
+    private val intermediateStops = mutableMapOf<String, MutableMap<String, Time>>()
+    private val eStops = mutableMapOf<String, extremeStations>()
+    private var maxTime = Time(0, 0)
 
     /**
      * Добавить новый поезд.
@@ -34,20 +35,12 @@ class TrainTimeTable(val baseStationName: String) {
      * @return true, если поезд успешно добавлен, false, если такой поезд уже есть
      */
     fun addTrain(train: String, depart: Time, destination: Stop): Boolean {
-        return if (!listOfTrains.containsKey(train)) {
-            listOfTrains[train] = mutableMapOf(baseStationName to depart, destination.name to destination.time)
+        return if (!eStops.containsKey(train)) {
+            eStops[train] = extremeStations(baseStationName, depart, destination.name, destination.time)
+            maxTime = depart
             true
         } else false
     }
-
-
-
-//        val newTrain = Train(train, Stop(baseStationName, depart), destination)
-//        return if (!listOfTrains.any { it.name == newTrain.name }) {
-//            listOfTrains.add(newTrain)
-//            true
-//        } else false
-//    }
 
     /**
      * Удалить существующий поезд.
@@ -58,17 +51,11 @@ class TrainTimeTable(val baseStationName: String) {
      * @return true, если поезд успешно удалён, false, если такой поезд не существует
      */
     fun removeTrain(train: String): Boolean {
-        return if (listOfTrains.containsKey(train)) {
-            listOfTrains.remove(train)
+        return if (eStops.containsKey(train)) {
+            eStops.remove(train)
             true
         } else false
     }
-
-//        return if (listOfTrains.any { it.name == train }) {
-//            listOfTrains.remove(listOfTrains.find { it.name == train })
-//            true
-//        } else false
-//    }
 
     /**
      * Добавить/изменить начальную, промежуточную или конечную остановку поезду.
@@ -89,53 +76,36 @@ class TrainTimeTable(val baseStationName: String) {
      * @return true, если поезду была добавлена новая остановка, false, если было изменено время остановки на старой
      */
     fun addStop(train: String, stop: Stop): Boolean {
-        if (listOfTrains.containsKey(train)) {
-            val stops = listOfTrains[train]!!
-            //val intermediateStops = stops - listOf(stops.keys.last(), stops.keys.first())
-            if (stops.containsValue(stop.time)) throw IllegalArgumentException("Incorrect time")
-            if (!stops.containsKey(stop.name)) {
-                stops[stop.name] = stop.time
-                listOfTrains[train] = stops.toList().sortedBy { (name, time) -> time }.toMap() as MutableMap<String, Time>
-                return true
+        if (eStops.containsKey(train)) {
+            if (eStops[train]!!.firstStName != stop.name && eStops[train]!!.lastStName != stop.name
+                && stop.time < eStops[train]!!.lastStTime && stop.time > eStops[train]!!.firstStTime) {
+                if (!intermediateStops.containsKey(train)) {
+                    intermediateStops[train] = mutableMapOf(stop.name to stop.time)
+                    maxTime = maxOf(maxTime, stop.time)
+                    return true
+                }
+                if (intermediateStops.containsKey(train) && !intermediateStops[train]!!.containsKey(stop.name)) {
+                    intermediateStops[train]!![stop.name] = stop.time
+                    maxTime = maxOf(maxTime, stop.time)
+                    return true
+                }
             }
-            if (stops.containsKey(stop.name)) {
-                stops[stop.name] = stop.time
-                listOfTrains[train] = stops.toList().sortedBy { (name, time) -> time }.toMap() as MutableMap<String, Time>
+            if (eStops[train]!!.firstStName == stop.name && stop.time < eStops[train]!!.firstStTime) {
+                eStops[train]!!.firstStTime = stop.time
+                return false
+            }
+            if (eStops[train]!!.lastStName == stop.name && stop.time < eStops[train]!!.lastStTime && stop.time > maxTime) {
+                eStops[train]!!.lastStTime = stop.time
+                return false
+            }
+            if (intermediateStops.containsKey(train) && intermediateStops[train]!!.containsKey(stop.name)
+                && stop.time > eStops[train]!!.firstStTime && stop.time < eStops[train]!!.lastStTime) {
+                intermediateStops[train]!![stop.name] = stop.time
                 return false
             }
         }
-        throw IllegalArgumentException("There is no such train")
+        throw IllegalArgumentException("The entered data is incorrect")
     }
-
-
-//        val currentTrain = listOfTrains.find { it.name == train }
-//        if (currentTrain != null) {
-//            val trainStops = currentTrain.stops.toMutableList()
-//
-//            if (stop.name != trainStops.first().name && stop.name != trainStops.last().name)
-//                if (stop.time > trainStops.last().time || stop.time < trainStops.first().time)
-//                    throw IllegalArgumentException("Incorrect time")
-//            if (trainStops.any { it.time == stop.time }) throw IllegalArgumentException("The train with such time is already included")
-//            if (stop.name == trainStops.first().name )
-//                if (trainStops.dropLast(1).drop(1).any { it.time < stop.time }) throw IllegalArgumentException("Incorrect time")
-//            if (stop.name == trainStops.last().name)
-//                if (trainStops.dropLast(1).drop(1).any { it.time > stop.time }) throw IllegalArgumentException("Incorrect time")
-//
-//            listOfTrains.remove(currentTrain)
-//            if (trainStops.all { it.name != stop.name }) {
-//                trainStops.add(1, stop)
-//                listOfTrains.add(Train(train, trainStops.sortedBy { it.time }))
-//                return true
-//            }
-//            if (trainStops.any { it.name == stop.name }) {
-//                val ind = trainStops.indexOf(trainStops.find { it.name == stop.name })
-//                trainStops[ind] = Stop(trainStops.find { it.name == stop.name }!!.name, stop.time)
-//                listOfTrains.add(Train(train, trainStops.sortedBy { it.time }))
-//                return false
-//            }
-//        }
-//        throw IllegalArgumentException()
-//    }
 
     /**
      * Удалить одну из промежуточных остановок.
@@ -148,57 +118,64 @@ class TrainTimeTable(val baseStationName: String) {
      * @return true, если удаление успешно
      */
     fun removeStop(train: String, stopName: String): Boolean {
-        if (listOfTrains.containsKey(train)) {
-            val stops = listOfTrains[train]!!
-            return if ((stops - listOf(stops.keys.last(), stops.keys.first())).containsKey(stopName)) {
-                listOfTrains[train]!!.remove(stopName)
+        if (intermediateStops.containsKey(train)) {
+            return if (intermediateStops[train]!!.containsKey(stopName)) {
+                intermediateStops[train]!!.remove(stopName)
                 true
             } else false
         }
-        throw IllegalArgumentException("There is no such train")
+        throw IllegalArgumentException("No such train")
     }
-
-//        if (listOfTrains.find { it.name == train }!!.stops.dropLast(1).drop(1).any { it.name == stopName }) {
-//            listOfTrains.remove(listOfTrains.find { it.stops.dropLast(1).drop(1).any { it.name == stopName }})
-//            return true
-//        }
-//        return false
-//    }
 
     /**
      * Вернуть список всех поездов, упорядоченный по времени отправления с baseStationName
      */
     fun trains(): List<Train> {
-        val list = mutableListOf<Train>()
-        listOfTrains.
+        val trains = mutableListOf<Train>()
+        for (key in eStops.keys)
+            trains.add(Train(key, listOf(Stop(eStops[key]!!.firstStName, eStops[key]!!.firstStTime),
+                Stop(eStops[key]!!.lastStName, eStops[key]!!.lastStTime))))
+        return trains.sortedBy { it.stops[0].time }
     }
-
-
-        //listOfTrains.sortedBy { it.stops[0].time }
 
     /**
      * Вернуть список всех поездов, отправляющихся не ранее currentTime
      * и имеющих остановку (начальную, промежуточную или конечную) на станции destinationName.
      * Список должен быть упорядочен по времени прибытия на станцию destinationName
      */
-    fun trains(currentTime: Time, destinationName: String): List<Train> = TODO()
-        //listOfTrains.filter { it.stops[0].time >= currentTime && it.stops.any { it.name == destinationName } }.sortedBy { it.stops[0].time }.asReversed()
+    fun trains(currentTime: Time, destinationName: String): List<Train> {
+        for (key in intermediateStops.keys) {
+            val stops = mutableListOf<Stop>()
+            var flag = false
+            if (eStops[key]!!.firstStTime >= currentTime) {
+                intermediateStops[key]!![eStops[key]!!.lastStName] = eStops[key]!!.lastStTime
+                intermediateStops[key]!![eStops[key]!!.firstStName] = eStops[key]!!.firstStTime
+                if (eStops[key]!!.lastStName == baseStationName || eStops[key]!!.firstStName == baseStationName) flag = true
+                for (nameOfStop in intermediateStops[key]!!.keys) {
+                    stops.add(Stop(nameOfStop, intermediateStops[key]!![nameOfStop]!!))
+                    if (nameOfStop == baseStationName) flag = true
+                }
+                if (flag) listOfTrains.add(Train(key, stops.sortedBy { it.time }))
+            }
+        }
+        return listOfTrains.asReversed()
+    }
+
 
     /**
      * Сравнение на равенство.
      * Расписания считаются одинаковыми, если содержат одинаковый набор поездов,
      * и поезда с тем же именем останавливаются на одинаковых станциях в одинаковое время.
      */
-    override fun equals(other: Any?): Boolean = TODO()
-
-
-      //  other is TrainTimeTable && listOfTrains == other.listOfTrains
+    override fun equals(other: Any?): Boolean =
+        other is TrainTimeTable && listOfTrains == other.listOfTrains
 
     override fun hashCode(): Int {
         var result = baseStationName.hashCode()
         result = 31 * result + listOfTrains.hashCode()
         return result
     }
+
 
 }
 
@@ -228,3 +205,5 @@ data class Stop(val name: String, val time: Time)
 data class Train(val name: String, val stops: List<Stop>) {
     constructor(name: String, vararg stops: Stop) : this(name, stops.asList())
 }
+
+data class extremeStations(val firstStName: String, var firstStTime: Time, val lastStName: String, var lastStTime: Time)

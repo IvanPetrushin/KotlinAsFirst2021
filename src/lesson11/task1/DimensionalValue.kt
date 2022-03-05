@@ -1,7 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
-
 package lesson11.task1
 
+import lesson5.task1.containsIn
 import java.lang.IllegalArgumentException
 
 /**
@@ -31,49 +31,61 @@ class DimensionalValue(value: Double, dimension: String) :
     val dimension: Dimension
 
     init {
-        if (Dimension.values().find { it.abbreviation == dimension.last().toString() } != null) {
-            this.dimension = Dimension.values().find { it.abbreviation == dimension.last().toString() }!!
-            this.value = when (DimensionPrefix.values().find { it.abbreviation == dimension.dropLast(1) }) {
-                null -> value
-                else -> value * DimensionPrefix.values().find { it.abbreviation == dimension.dropLast(1) }!!.multiplier
-            }
-        } else throw IllegalArgumentException("$dimension is unknown")
+
+        this.dimension = Dimension.dimensionMap[dimension.last().toString()]
+            ?: throw IllegalArgumentException("$dimension is unknown")
+        if (dimension.length == 1) this.value = value
+        else {
+            if (!DimensionPrefix.dimensionMap.containsKey(dimension.first().toString()))
+                throw IllegalArgumentException("$dimension is unknown")
+            else this.value = value * DimensionPrefix.dimensionMap[dimension.first().toString()]!!
+        }
     }
+
 
     /**
      * Конструктор из строки. Формат строки: значение пробел размерность (1 Kg, 3 mm, 100 g и так далее).
      */
-    constructor(s: String) : this(s.split(" ")[0].toDouble(), s.split(" ")[1])
+    constructor(s: String) : this(
+        if (!s.matches(Regex("""((-\d+|\d+) \w+)"""))) throw IllegalArgumentException("Incorrect data")
+        else s.split(" ")[0].toDouble(), s.split(" ")[1])
 
     /**
      * Сложение с другой величиной. Если базовая размерность разная, бросить IllegalArgumentException
      * (нельзя складывать метры и килограммы)
      */
     operator fun plus(other: DimensionalValue): DimensionalValue =
-        if (other.dimension == this.dimension) DimensionalValue(this.value + other.value, this.dimension.abbreviation)
+        if (other.dimension == this.dimension) DimensionalValue(
+            this.value + other.value,
+            this.dimension.abbreviation
+        )
         else throw IllegalArgumentException("${other.dimension} can't be added to ${this.dimension}")
 
     /**
      * Смена знака величины
      */
-    operator fun unaryMinus(): DimensionalValue = DimensionalValue(-this.value, this.dimension.abbreviation)
+    operator fun unaryMinus(): DimensionalValue =
+        DimensionalValue(-this.value, this.dimension.abbreviation)
 
     /**
      * Вычитание другой величины. Если базовая размерность разная, бросить IllegalArgumentException
      */
     operator fun minus(other: DimensionalValue): DimensionalValue =
-        if (other.dimension == this.dimension) DimensionalValue(this.value - other.value, this.dimension.abbreviation
+        if (other.dimension == this.dimension) DimensionalValue(
+            this.value - other.value, this.dimension.abbreviation
         ) else throw IllegalArgumentException("${this.dimension} can't be subtracted from ${other.dimension}")
 
     /**
      * Умножение на число
      */
-    operator fun times(other: Double): DimensionalValue = DimensionalValue(this.value * other, this.dimension.abbreviation)
+    operator fun times(other: Double): DimensionalValue =
+        DimensionalValue(this.value * other, this.dimension.abbreviation)
 
     /**
      * Деление на число
      */
-    operator fun div(other: Double): DimensionalValue = DimensionalValue(this.value / other, this.dimension.abbreviation)
+    operator fun div(other: Double): DimensionalValue =
+        DimensionalValue(this.value / other, this.dimension.abbreviation)
 
     /**
      * Деление на другую величину. Если базовая размерность разная, бросить IllegalArgumentException
@@ -113,6 +125,9 @@ class DimensionalValue(value: Double, dimension: String) :
 enum class Dimension(val abbreviation: String) {
     METER("m"),
     GRAM("g");
+
+    companion object { val dimensionMap = values().associateBy { it.abbreviation } }
+
 }
 
 /**
@@ -121,4 +136,6 @@ enum class Dimension(val abbreviation: String) {
 enum class DimensionPrefix(val abbreviation: String, val multiplier: Double) {
     KILO("K", 1000.0),
     MILLI("m", 0.001);
+
+    companion object { val dimensionMap = values().associateBy({ it.abbreviation }) { it.multiplier } }
 }

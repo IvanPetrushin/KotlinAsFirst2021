@@ -207,4 +207,3 @@ data class Train(val name: String, val stops: List<Stop>) {
 }
 
 data class extremeStations(val firstStName: String, var firstStTime: Time, val lastStName: String, var lastStTime: Time)
-

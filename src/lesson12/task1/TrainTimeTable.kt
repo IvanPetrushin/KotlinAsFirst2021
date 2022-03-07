@@ -3,6 +3,7 @@
 package lesson12.task1
 
 import java.lang.IllegalArgumentException
+import java.util.*
 
 /**
  * Класс "расписание поездов".
@@ -19,13 +20,15 @@ import java.lang.IllegalArgumentException
  */
 class TrainTimeTable(val baseStationName: String) {
 
-    private val listOfTrains = mutableListOf<Train>()
     private val intermediateStops = mutableMapOf<String, MutableMap<String, Time>>()
-    private val eStops = mutableMapOf<String, extremeStations>()
-    private var maxTime = Time(0, 0)
+    private val eStops = mutableMapOf<String, ExtremeStations>()
+    private val sortedStops = mutableMapOf<String, SortedMap<Time, String>>()
+    private val sortedTrains = sortedMapOf<Time, String>()
 
     /**
      * Добавить новый поезд.
+     *
+     *
      *
      * Если поезд с таким именем уже есть, следует вернуть false и ничего не изменять в таблице
      *
@@ -36,8 +39,9 @@ class TrainTimeTable(val baseStationName: String) {
      */
     fun addTrain(train: String, depart: Time, destination: Stop): Boolean {
         return if (!eStops.containsKey(train)) {
-            eStops[train] = extremeStations(baseStationName, depart, destination.name, destination.time)
-            maxTime = depart
+            eStops[train] = ExtremeStations(baseStationName, depart, destination.name, destination.time)
+            sortedStops[train] = sortedMapOf(depart to baseStationName, destination.time to destination.name)
+            sortedTrains[depart] = train
             true
         } else false
     }
@@ -52,7 +56,10 @@ class TrainTimeTable(val baseStationName: String) {
      */
     fun removeTrain(train: String): Boolean {
         return if (eStops.containsKey(train)) {
+            sortedTrains.remove(eStops[train]!!.firstStTime)
             eStops.remove(train)
+            intermediateStops.remove(train)
+            sortedStops.remove(train)
             true
         } else false
     }
@@ -76,31 +83,38 @@ class TrainTimeTable(val baseStationName: String) {
      * @return true, если поезду была добавлена новая остановка, false, если было изменено время остановки на старой
      */
     fun addStop(train: String, stop: Stop): Boolean {
-        if (eStops.containsKey(train)) {
+        if (eStops.containsKey(train) && !sortedStops[train]!!.containsKey(stop.time)) {
             if (eStops[train]!!.firstStName != stop.name && eStops[train]!!.lastStName != stop.name
                 && stop.time < eStops[train]!!.lastStTime && stop.time > eStops[train]!!.firstStTime) {
                 if (!intermediateStops.containsKey(train)) {
                     intermediateStops[train] = mutableMapOf(stop.name to stop.time)
-                    maxTime = maxOf(maxTime, stop.time)
+                    sortedStops[train] = sortedMapOf(stop.time to stop.name)
                     return true
                 }
                 if (intermediateStops.containsKey(train) && !intermediateStops[train]!!.containsKey(stop.name)) {
                     intermediateStops[train]!![stop.name] = stop.time
-                    maxTime = maxOf(maxTime, stop.time)
+                    sortedStops[train]!![stop.time] = stop.name
                     return true
                 }
             }
             if (eStops[train]!!.firstStName == stop.name && stop.time < eStops[train]!!.firstStTime) {
                 eStops[train]!!.firstStTime = stop.time
+                sortedStops[train]!!.remove(eStops[train]!!.firstStTime)
+                sortedStops[train]!![stop.time] = stop.name
                 return false
             }
-            if (eStops[train]!!.lastStName == stop.name && stop.time < eStops[train]!!.lastStTime && stop.time > maxTime) {
+            if (eStops[train]!!.lastStName == stop.name && stop.time < eStops[train]!!.lastStTime
+                && stop.time > sortedStops[train]!!.keys.last()) {
                 eStops[train]!!.lastStTime = stop.time
+                sortedStops[train]!!.remove(eStops[train]!!.lastStTime)
+                sortedStops[train]!![stop.time] = stop.name
                 return false
             }
             if (intermediateStops.containsKey(train) && intermediateStops[train]!!.containsKey(stop.name)
                 && stop.time > eStops[train]!!.firstStTime && stop.time < eStops[train]!!.lastStTime) {
                 intermediateStops[train]!![stop.name] = stop.time
+                sortedStops[train]!!.remove(intermediateStops[train]!![stop.name])
+                sortedStops[train]!![stop.time] = stop.name
                 return false
             }
         }
@@ -120,6 +134,7 @@ class TrainTimeTable(val baseStationName: String) {
     fun removeStop(train: String, stopName: String): Boolean {
         if (intermediateStops.containsKey(train)) {
             return if (intermediateStops[train]!!.containsKey(stopName)) {
+                sortedStops[train]!!.remove(intermediateStops[train]!![stopName])
                 intermediateStops[train]!!.remove(stopName)
                 true
             } else false
@@ -132,10 +147,15 @@ class TrainTimeTable(val baseStationName: String) {
      */
     fun trains(): List<Train> {
         val trains = mutableListOf<Train>()
-        for (key in eStops.keys)
-            trains.add(Train(key, listOf(Stop(eStops[key]!!.firstStName, eStops[key]!!.firstStTime),
-                Stop(eStops[key]!!.lastStName, eStops[key]!!.lastStTime))))
-        return trains.sortedBy { it.stops[0].time }
+        for (train in sortedTrains.values) {
+            sortedStops[train]!![eStops[train]!!.firstStTime] = eStops[train]!!.firstStName
+            sortedStops[train]!![eStops[train]!!.lastStTime] = eStops[train]!!.lastStName
+            val stops = mutableListOf<Stop>()
+            for (time in sortedStops[train]!!.keys)
+                stops.add(Stop(sortedStops[train]!![time]!!, time))
+            trains.add(Train(train, stops))
+        }
+        return trains
     }
 
     /**
@@ -143,22 +163,29 @@ class TrainTimeTable(val baseStationName: String) {
      * и имеющих остановку (начальную, промежуточную или конечную) на станции destinationName.
      * Список должен быть упорядочен по времени прибытия на станцию destinationName
      */
+
     fun trains(currentTime: Time, destinationName: String): List<Train> {
-        for (key in intermediateStops.keys) {
+        val trains = mutableListOf<Train>()
+        var index = 0
+        for (train in intermediateStops.keys) {
             val stops = mutableListOf<Stop>()
             var flag = false
-            if (eStops[key]!!.firstStTime >= currentTime) {
-                intermediateStops[key]!![eStops[key]!!.lastStName] = eStops[key]!!.lastStTime
-                intermediateStops[key]!![eStops[key]!!.firstStName] = eStops[key]!!.firstStTime
-                if (eStops[key]!!.lastStName == baseStationName || eStops[key]!!.firstStName == baseStationName) flag = true
-                for (nameOfStop in intermediateStops[key]!!.keys) {
-                    stops.add(Stop(nameOfStop, intermediateStops[key]!![nameOfStop]!!))
-                    if (nameOfStop == baseStationName) flag = true
+            if (eStops[train]!!.firstStTime >= currentTime) {
+                sortedStops[train]!![eStops[train]!!.firstStTime] = eStops[train]!!.firstStName
+                sortedStops[train]!![eStops[train]!!.lastStTime] = eStops[train]!!.lastStName
+                if (eStops[train]!!.lastStName == baseStationName || eStops[train]!!.firstStName == baseStationName
+                    || intermediateStops[train]!!.containsKey(baseStationName)) flag = true
+                if (flag) {
+                    for (time in sortedStops[train]!!.keys) {
+                        stops.add(Stop(sortedStops[train]!![time]!!, time))
+                        if (baseStationName == sortedStops[train]!![time]!!)
+                            index = stops.indexOf(Stop(sortedStops[train]!![time]!!, time))
+                    }
+                    trains.add(Train(train, stops))
                 }
-                if (flag) listOfTrains.add(Train(key, stops.sortedBy { it.time }))
             }
         }
-        return listOfTrains.asReversed()
+        return trains.sortedBy { it.stops[index].time }.asReversed()
     }
 
 
@@ -168,15 +195,17 @@ class TrainTimeTable(val baseStationName: String) {
      * и поезда с тем же именем останавливаются на одинаковых станциях в одинаковое время.
      */
     override fun equals(other: Any?): Boolean =
-        other is TrainTimeTable && listOfTrains == other.listOfTrains
+        other is TrainTimeTable && intermediateStops == other.intermediateStops && eStops == other.eStops
+                && sortedStops == other.sortedStops && sortedTrains == this.sortedTrains
 
     override fun hashCode(): Int {
         var result = baseStationName.hashCode()
-        result = 31 * result + listOfTrains.hashCode()
+        result = 31 * result + intermediateStops.hashCode()
+        result = 31 * result + eStops.hashCode()
+        result = 31 * result + sortedStops.hashCode()
+        result = 31 * result + sortedTrains.hashCode()
         return result
     }
-
-
 }
 
 /**
@@ -206,7 +235,9 @@ data class Train(val name: String, val stops: List<Stop>) {
     constructor(name: String, vararg stops: Stop) : this(name, stops.asList())
 }
 
-data class extremeStations(val firstStName: String, var firstStTime: Time, val lastStName: String, var lastStTime: Time)
+data class ExtremeStations(val firstStName: String, var firstStTime: Time, val lastStName: String, var lastStTime: Time)
+
+
 
 
 

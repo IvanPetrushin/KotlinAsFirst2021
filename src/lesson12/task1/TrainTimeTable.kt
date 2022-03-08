@@ -148,8 +148,6 @@ class TrainTimeTable(val baseStationName: String) {
     fun trains(): List<Train> {
         val trains = mutableListOf<Train>()
         for (train in sortedTrains.values) {
-            sortedStops[train]!![eStops[train]!!.firstStTime] = eStops[train]!!.firstStName
-            sortedStops[train]!![eStops[train]!!.lastStTime] = eStops[train]!!.lastStName
             val stops = mutableListOf<Stop>()
             for (time in sortedStops[train]!!.keys)
                 stops.add(Stop(sortedStops[train]!![time]!!, time))
@@ -173,19 +171,19 @@ class TrainTimeTable(val baseStationName: String) {
             if (eStops[train]!!.firstStTime >= currentTime) {
                 sortedStops[train]!![eStops[train]!!.firstStTime] = eStops[train]!!.firstStName
                 sortedStops[train]!![eStops[train]!!.lastStTime] = eStops[train]!!.lastStName
-                if (eStops[train]!!.lastStName == baseStationName || eStops[train]!!.firstStName == baseStationName
-                    || intermediateStops[train]!!.containsKey(baseStationName)) flag = true
+                if (eStops[train]!!.lastStName == destinationName || eStops[train]!!.firstStName == destinationName
+                    || intermediateStops[train]!!.containsKey(destinationName)) flag = true
                 if (flag) {
                     for (time in sortedStops[train]!!.keys) {
                         stops.add(Stop(sortedStops[train]!![time]!!, time))
-                        if (baseStationName == sortedStops[train]!![time]!!)
+                        if (destinationName == sortedStops[train]!![time]!!)
                             index = stops.indexOf(Stop(sortedStops[train]!![time]!!, time))
                     }
                     trains.add(Train(train, stops))
                 }
             }
         }
-        return trains.sortedBy { it.stops[index].time }.asReversed()
+        return trains.sortedBy { it.stops[index].time }
     }
 
 
